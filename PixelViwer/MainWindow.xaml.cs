@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
+using QSoft.ColorSpaceCOnvert;
 
 namespace PixelViwer
 {
@@ -23,6 +25,35 @@ namespace PixelViwer
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        MainUI m_MainUI;
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(this.m_MainUI == null)
+            {
+                this.DataContext = this.m_MainUI = new MainUI();
+            }
+        }
+    }
+
+    public class MainUI : INotifyPropertyChanged
+    {
+        public List<ColorSpaces> ColorSpaces { set; get; } = new List<ColorSpaces>();
+        public MainUI()
+        {
+           foreach(var oo in Enum.GetNames(typeof(ColorSpaces)))
+            {
+                //this.ColorSpaces.Add(oo);
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        void Update(string name)
+        {
+            if(this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
         }
     }
 }
