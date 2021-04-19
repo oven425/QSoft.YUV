@@ -13,8 +13,26 @@ namespace QSoft.ColorSpaceCOnvert
         YUY2
     }
 
+    public class Data
+    {
+        public byte Image { set; get; }
+        public int Width { set; get; }
+        public int Height { set; get; }
+        public ColorSpaces ColorSpace { set; get; }
+    }
+
     public class Color_Convert
     {
+        public void ToRGB(Data data)
+        {
 
+        }
+        public byte[] ToRGB(byte[] src, ColorSpaces color, int width, int height)
+        {
+            byte[] dst = new byte[123];
+
+
+            return dst;
+        }
     }
 }

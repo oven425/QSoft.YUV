@@ -27,6 +27,12 @@ namespace PixelViwer
             InitializeComponent();
         }
 
+        public void Test(Action<Data> data)
+        {
+            Data dd = new Data();
+            data(dd);
+        }
+
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -34,6 +40,13 @@ namespace PixelViwer
             {
                 this.DataContext = this.m_MainUI = new MainUI();
             }
+            this.Test(x => 
+            {
+                x.Width = 720; x.Height = 480;
+            });
+
+            Color_Convert convert = new Color_Convert();
+            //convert.ToRGB()
         }
     }
 
