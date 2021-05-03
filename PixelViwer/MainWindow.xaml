@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <Image/>
         <Grid Grid.Row="1">
-            <ComboBox/>
+            <TextBox x:Name="textbox_hex"/>
         </Grid>
     </Grid>
 </Window>

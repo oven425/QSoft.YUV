@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using QSoft.ColorSpaceCOnvert;
+using System.IO;
 
 namespace PixelViwer
 {
@@ -39,6 +40,15 @@ namespace PixelViwer
             if(this.m_MainUI == null)
             {
                 this.DataContext = this.m_MainUI = new MainUI();
+                byte[] bb = File.ReadAllBytes("../../../720-404-yuy2.yuv");
+                foreach(byte oo in bb)
+                {
+
+                }
+                //bool exist = File.Exists("../../../720-404-yuy2.yuv");
+                //FileStream fs = File.OpenRead("../../../720-404-yuy2.yuv");
+                //byte[] buf = new byte[4];
+                //int read_len = fs.Read(buf, 0, buf.Length);
             }
             this.Test(x => 
             {
