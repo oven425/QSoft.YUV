@@ -49,7 +49,7 @@ namespace PixelViwer
             //convert.ToRGB()
         }
     }
-
+    //ffmpeg -i 123.jpg -pix_fmt yuyv422 123.yuv
     public class MainUI : INotifyPropertyChanged
     {
         public List<ColorSpaces> ColorSpaces { set; get; } = new List<ColorSpaces>();
