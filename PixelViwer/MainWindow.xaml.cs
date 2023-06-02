@@ -40,11 +40,27 @@ namespace PixelViwer
             if(this.m_MainUI == null)
             {
                 this.DataContext = this.m_MainUI = new MainUI();
-                byte[] bb = File.ReadAllBytes("../../../720-404-yuy2.yuv");
-                foreach(byte oo in bb)
+                byte[] bb = File.ReadAllBytes("../../../720-404-rgb24.rgb");
+                int len = 720 * 404 * 3;
+                for(int i=0; i<len; i=i+3)
                 {
-
+                    //bb[i] = 0;
+                    bb[i+1] = 0;
+                    bb[i + 2] = 0;
                 }
+                byte[] buffer = bb; 
+var width = 720; // for example
+                var height = 404; // for example
+                var dpiX = 96d;
+                var dpiY = 96d;
+                var pixelFormat = PixelFormats.Rgb24; // grayscale bitmap
+                var bytesPerPixel = (pixelFormat.BitsPerPixel + 7) / 8;
+                var stride = bytesPerPixel * width; // == width in this example
+                var bmp = BitmapSource.Create(width, height, dpiX, dpiY,
+                                                 pixelFormat, null, buffer, stride);
+                this.image.Source = bmp;
+
+                File.WriteAllBytes("111", bb);
                 //bool exist = File.Exists("../../../720-404-yuy2.yuv");
                 //FileStream fs = File.OpenRead("../../../720-404-yuy2.yuv");
                 //byte[] buf = new byte[4];

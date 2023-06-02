@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace QSoft.ColorSpaceCOnvert
 {
+    public class YUVChannel
+    {
+        public List<byte> Y { set; get; }
+        public List<byte> U { set; get; }
+        public List<byte> V { set; get; }
+    }
+    public class YUY2Raw
+    {
+
+    }
+
     public enum ColorSpaces
     {
         RGB8,

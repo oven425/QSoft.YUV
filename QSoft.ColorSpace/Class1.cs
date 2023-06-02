@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace QSoft.ColorSpace
 {
-    public class Class1
+    public class YUY2Raw
     {
+        public byte[] Data { get; set; }
+        
     }
+
+    public class RgbRaw
+    {
+        public byte[] Datas { set; get; }
+    }
+
 
     public enum ColorSpaces
     {
@@ -16,18 +24,18 @@ namespace QSoft.ColorSpace
         RGB24,
         RGB32
     }
+
+    public interface ColorSpaceTransform
+    {
+        ColorSpaces ColorSpaces { get; }
+        byte[] Convert(byte[] data);
+    }
     public class ColorSpaceBase
     {
-
+        
     }
 
-    public static class ColorSpace
-    {
-        public static byte[] Rotate(this byte[] src)
-        {
-            return null;
-        }
-    }
+    
 
     
 }
