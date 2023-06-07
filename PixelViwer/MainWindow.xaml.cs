@@ -37,7 +37,14 @@ namespace PixelViwer
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.m_MainUI == null)
+            byte[] yuv444p_raw = File.ReadAllBytes("../../../720-404-yuv444p.yuv");
+            var y = yuv444p_raw.Take(720 * 404).ToArray();
+            
+            var yuv444p = new YUY444p(yuv444p_raw, 720, 404);
+            File.WriteAllBytes("y", yuv444p.Y.ToArray());
+            File.WriteAllBytes("u", yuv444p.U.ToArray());
+            File.WriteAllBytes("v", yuv444p.V.ToArray());
+            if (this.m_MainUI == null)
             {
                 this.DataContext = this.m_MainUI = new MainUI();
                 byte[] bb = File.ReadAllBytes("../../../720-404-rgb24.rgb");
@@ -49,7 +56,7 @@ namespace PixelViwer
                     bb[i + 2] = 0;
                 }
                 byte[] buffer = bb; 
-var width = 720; // for example
+                var width = 720; // for example
                 var height = 404; // for example
                 var dpiX = 96d;
                 var dpiY = 96d;
