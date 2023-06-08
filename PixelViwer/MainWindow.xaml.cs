@@ -41,9 +41,11 @@ namespace PixelViwer
             var y = yuv444p_raw.Take(720 * 404).ToArray();
             
             var yuv444p = new YUY444p(yuv444p_raw, 720, 404);
-            File.WriteAllBytes("y", yuv444p.Y.ToArray());
-            File.WriteAllBytes("u", yuv444p.U.ToArray());
-            File.WriteAllBytes("v", yuv444p.V.ToArray());
+            var rgb = yuv444p.ToRGB();
+            File.WriteAllBytes("rgb", rgb);
+            //File.WriteAllBytes("y", yuv444p.Y.ToArray());
+            //File.WriteAllBytes("u", yuv444p.U.ToArray());
+            //File.WriteAllBytes("v", yuv444p.V.ToArray());
             if (this.m_MainUI == null)
             {
                 this.DataContext = this.m_MainUI = new MainUI();

@@ -51,7 +51,42 @@ namespace QSoft.ColorSpaceCOnvert
             this.m_Width = width;
             this.m_Height = height;
         }
+
+        public byte[] ToRGB()
+        {
+            var rgb = new byte[m_Width*m_Height*3];
+            var y = this.Y.ToArray();
+            var u = this.U.ToArray();
+            var v = this.V.ToArray();
+            int index = 0;
+            for(int i=0; i<y.Length; i++)
+            {
+                var Y = y[i];
+                var V = v[i];
+                var U = u[i];
+                var R = Y + 1.400*V - 0.7;
+                var G = Y - 0.343*U - 0.711*V + 0.526;
+                var B = Y + 1.765*U - 0.883;
+                
+                rgb[index + 0] = (byte)(R>255?255:R);
+                rgb[index + 1] = (byte)(G > 255 ? 255 : G);
+                rgb[index + 2] = (byte)(B > 255 ? 255 : B);
+                index = index + 3;
+            }
+
+            return rgb;
+        }
     }
+
+    //public static class YUVEx
+    //{
+    //    public static byte[] ToRGB(this YUY444p src)
+    //    {
+    //        src.Y.Zip(src.U, (x, y) => new { y=x,u=y });
+    //        return null;
+    //    }
+
+    //}
 
     public class YUY2Raw
     {
