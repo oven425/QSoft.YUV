@@ -61,13 +61,15 @@ namespace QSoft.ColorSpaceCOnvert
             int index = 0;
             for(int i=0; i<y.Length; i++)
             {
-                var Y = y[i];
-                var V = v[i];
-                var U = u[i];
-                var R = Y + 1.400*V - 0.7;
-                var G = Y - 0.343*U - 0.711*V + 0.526;
-                var B = Y + 1.765*U - 0.883;
-                
+                double Y = y[i];
+                double V = v[i];
+                double U = u[i];
+                Y -= 16;
+                U -= 128;
+                V -= 128;
+                var R = 1.164 * Y + 1.596 * V;
+                var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+                var B = 1.164 * Y + 2.017 * U;
                 rgb[index + 0] = (byte)(R>255?255:R);
                 rgb[index + 1] = (byte)(G > 255 ? 255 : G);
                 rgb[index + 2] = (byte)(B > 255 ? 255 : B);
@@ -103,18 +105,18 @@ namespace QSoft.ColorSpaceCOnvert
         public ColorSpaces ColorSpace { set; get; }
     }
 
-    public class Color_Convert
-    {
-        public void ToRGB(Data data)
-        {
+    //public class Color_Convert
+    //{
+    //    public void ToRGB(Data data)
+    //    {
 
-        }
-        public byte[] ToRGB(byte[] src, ColorSpaces color, int width, int height)
-        {
-            byte[] dst = new byte[123];
+    //    }
+    //    public byte[] ToRGB(byte[] src, ColorSpaces color, int width, int height)
+    //    {
+    //        byte[] dst = new byte[123];
 
 
-            return dst;
-        }
-    }
+    //        return dst;
+    //    }
+    //}
 }

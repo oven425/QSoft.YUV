@@ -80,7 +80,7 @@ namespace PixelViwer
                 x.Width = 720; x.Height = 480;
             });
 
-            Color_Convert convert = new Color_Convert();
+            //Color_Convert convert = new Color_Convert();
             //convert.ToRGB()
         }
     }
