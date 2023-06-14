@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace QSoft.ColorSpaceCOnvert
 {
@@ -42,6 +44,8 @@ namespace QSoft.ColorSpaceCOnvert
         public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
         public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height*2).Take(this.m_Width * this.m_Height);
         public byte[] Raw => m_Raw;
+        public int Width=> m_Width;
+        public int Height=> m_Height;
         int m_Width;
         int m_Height;
         byte[] m_Raw;
@@ -79,22 +83,6 @@ namespace QSoft.ColorSpaceCOnvert
             return rgb;
         }
     }
-
-    //public static class YUVEx
-    //{
-    //    public static byte[] ToRGB(this YUY444p src)
-    //    {
-    //        src.Y.Zip(src.U, (x, y) => new { y=x,u=y });
-    //        return null;
-    //    }
-
-    //}
-
-    public class YUY2Raw
-    {
-
-    }
-
     
 
     public class Data
@@ -105,18 +93,12 @@ namespace QSoft.ColorSpaceCOnvert
         public ColorSpaces ColorSpace { set; get; }
     }
 
-    //public class Color_Convert
-    //{
-    //    public void ToRGB(Data data)
-    //    {
-
-    //    }
-    //    public byte[] ToRGB(byte[] src, ColorSpaces color, int width, int height)
-    //    {
-    //        byte[] dst = new byte[123];
-
-
-    //        return dst;
-    //    }
-    //}
+    public static class YUVEx_WPF
+    {
+        //public static ImageSource ToImageSource(this YUY444p src)
+        //{
+        //    var bbs = src.ToRGB();
+        //    var pictureBitmap = BitmapSource.Create(100, 100, PixelFormats.Bgr32, null, bbs, colorFrame.Width * colorFrame.BytesPerPixel);
+        //}
+    }
 }
