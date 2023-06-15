@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Documents.Serialization;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -95,10 +97,17 @@ namespace QSoft.ColorSpaceCOnvert
 
     public static class YUVEx_WPF
     {
-        //public static ImageSource ToImageSource(this YUY444p src)
-        //{
-        //    var bbs = src.ToRGB();
-        //    var pictureBitmap = BitmapSource.Create(100, 100, PixelFormats.Bgr32, null, bbs, colorFrame.Width * colorFrame.BytesPerPixel);
-        //}
+        public static BitmapSource ToBitmapSource(this YUY444p src)
+        {
+            PixelFormat pf = PixelFormats.Rgb24;
+            int width = src.Width;
+            int height = src.Height;
+            int rawStride = (width * pf.BitsPerPixel + 7) / 8;
+            byte[] rawImage = src.ToRGB();
+            BitmapSource bitmap = BitmapSource.Create(width, height,
+                96, 96, pf, null,
+                rawImage, rawStride);
+            return bitmap;
+        }
     }
 }
