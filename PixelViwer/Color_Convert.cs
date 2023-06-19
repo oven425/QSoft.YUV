@@ -17,19 +17,19 @@ namespace QSoft.ColorSpaceCOnvert
         YUV444p,
         YUY2
     }
-    public class YUVChannel
-    {
-        public byte[] Raw { protected set; get; }
-        public ColorSpaces ColorSpace { protected set; get; }
-        public List<byte> Y {protected set;get; }
-        public List<byte> U { set; get; }
-        public List<byte> V { set; get; }
-        public YUVChannel(ColorSpaces colorspace, byte[] raw)
-        {
-            this.ColorSpace = colorspace;
-            this.Raw = raw;
-        }
-    }
+    //public class YUVChannel
+    //{
+    //    public byte[] Raw { protected set; get; }
+    //    public ColorSpaces ColorSpace { protected set; get; }
+    //    public List<byte> Y {protected set;get; }
+    //    public List<byte> U { set; get; }
+    //    public List<byte> V { set; get; }
+    //    public YUVChannel(ColorSpaces colorspace, byte[] raw)
+    //    {
+    //        this.ColorSpace = colorspace;
+    //        this.Raw = raw;
+    //    }
+    //}
 
     public interface IYUV
     {
@@ -39,6 +39,15 @@ namespace QSoft.ColorSpaceCOnvert
         IEnumerable<byte> V { get; }
         byte[] Raw { get; }
     }
+
+    public interface IRGB
+    {
+        IEnumerable<byte> R { get; }
+        IEnumerable<byte> G { get; }
+        IEnumerable<byte> B { get; }
+        byte[] Raw { get; }
+    }
+
     public class YUY444p : IYUV
     {
         public ColorSpaces ColorSpace => ColorSpaces.YUV444p;
@@ -85,14 +94,24 @@ namespace QSoft.ColorSpaceCOnvert
             return rgb;
         }
     }
-    
 
-    public class Data
+    public class YUY2
     {
-        public byte Image { set; get; }
-        public int Width { set; get; }
-        public int Height { set; get; }
-        public ColorSpaces ColorSpace { set; get; }
+        public IEnumerable<byte> Y => m_Raw.Take(this.m_Width * this.m_Height);
+        public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
+        public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height * 2).Take(this.m_Width * this.m_Height);
+        public byte[] Raw => m_Raw;
+        public int Width => m_Width;
+        public int Height => m_Height;
+        int m_Width;
+        int m_Height;
+        byte[] m_Raw;
+        public YUY2(byte[] raw, int width, int height)
+        {
+            this.m_Raw = raw;
+            this.m_Width = width;
+            this.m_Height = height;
+        }
     }
 
     public static class YUVEx_WPF
@@ -104,9 +123,7 @@ namespace QSoft.ColorSpaceCOnvert
             int height = src.Height;
             int rawStride = (width * pf.BitsPerPixel + 7) / 8;
             byte[] rawImage = src.ToRGB();
-            BitmapSource bitmap = BitmapSource.Create(width, height,
-                96, 96, pf, null,
-                rawImage, rawStride);
+            BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, pf, null, rawImage, rawStride);
             return bitmap;
         }
     }

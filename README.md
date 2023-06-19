@@ -1,4 +1,6 @@
 # PixelViwer
+## 參考資料
+https://paaatrick.com/2020-01-26-yuv-pixel-formats/
 ## ffmpeg support pixel format
 ```shell
 ffmpeg -pix_fmts
