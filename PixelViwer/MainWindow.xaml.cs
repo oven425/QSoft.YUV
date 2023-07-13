@@ -31,16 +31,35 @@ namespace PixelViwer
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            byte[] yuv444p_raw = File.ReadAllBytes("../../../720-404-yuv444p.yuv");
-            var y = yuv444p_raw.Take(720 * 404).ToArray();
-            
-            var yuv444p = new YUY444p(yuv444p_raw, 720, 404);
-            var rgb = yuv444p.ToRGB();
-            
-            File.WriteAllBytes("rgb", rgb);
+            var yuy2_raw = File.ReadAllBytes("../../../720-404-yuy2.yuv");
+            var y = yuy2_raw.Where((x, index) => { return index % 2 == 0; }).ToArray();
+            var u = yuy2_raw.Where((x, index) => { return index % 3 == 0; }).ToArray();
+            List<byte> ys = new List<byte>();
+            for (int i=0; i<yuy2_raw.Length; i=i+2)
+            {
+                ys.Add(yuy2_raw[i]);
+            }
 
-            image.Source = yuv444p.ToBitmapSource();
+            //var yuy2 = new YUY2(yuy2_raw, 720, 404);
+            //var rgb = yuy2.ToRGB();
+
+            //File.WriteAllBytes("rgb", rgb);
+
+            //image.Source = yuy2.ToBitmapSource();
+
             return;
+
+
+            //byte[] yuv444p_raw = File.ReadAllBytes("../../../720-404-yuv444p.yuv");
+
+            
+            //var yuv444p = new YUY444p(yuv444p_raw, 720, 404);
+            //var rgb = yuv444p.ToRGB();
+            
+            //File.WriteAllBytes("rgb", rgb);
+
+            //image.Source = yuv444p.ToBitmapSource();
+            //return;
 
             //File.WriteAllBytes("y", yuv444p.Y.ToArray());
             //File.WriteAllBytes("u", yuv444p.U.ToArray());
