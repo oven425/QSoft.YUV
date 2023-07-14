@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -40,13 +41,13 @@ namespace QSoft.ColorSpaceCOnvert
         byte[] Raw { get; }
     }
 
-    public interface IRGB
-    {
-        IEnumerable<byte> R { get; }
-        IEnumerable<byte> G { get; }
-        IEnumerable<byte> B { get; }
-        byte[] Raw { get; }
-    }
+    //public interface IRGB
+    //{
+    //    IEnumerable<byte> R { get; }
+    //    IEnumerable<byte> G { get; }
+    //    IEnumerable<byte> B { get; }
+    //    byte[] Raw { get; }
+    //}
 
     public class YUY444p : IYUV
     {
@@ -141,6 +142,29 @@ namespace QSoft.ColorSpaceCOnvert
         }
 
     }
+
+    public static class YUVEx
+    {
+        public static (byte r,byte g,byte b) ToRGB(this (byte y, byte u, byte v) src)
+        {
+            double Y = src.y;
+            double V = src.v;
+            double U = src.u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+            var R = 1.164 * Y + 1.596 * V;
+            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            var B = 1.164 * Y + 2.017 * U;
+            var r = (byte)(R > 255 ? 255 : R);
+            var g = (byte)(G > 255 ? 255 : G);
+            var b = (byte)(B > 255 ? 255 : B);
+            return (r,g,b);
+        }
+            
+    }
+
+    
 
     public static class YUVEx_WPF
     {

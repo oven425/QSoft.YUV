@@ -32,13 +32,32 @@ namespace PixelViwer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var yuy2_raw = File.ReadAllBytes("../../../720-404-yuy2.yuv");
-            var y = yuy2_raw.Where((x, index) => { return index % 2 == 0; }).ToArray();
-            var u = yuy2_raw.Where((x, index) => { return index % 3 == 0; }).ToArray();
+            
+            //var y = yuy2_raw.Where((x, index) => { return index % 2 == 0; }).ToArray();
+            //var v = yuy2_raw.Skip(1).Where((x, index) => { return index % 3 == 0; }).ToArray();
             List<byte> ys = new List<byte>();
             for (int i=0; i<yuy2_raw.Length; i=i+2)
             {
                 ys.Add(yuy2_raw[i]);
             }
+            List<byte> us = new List<byte>();
+            for(int i=1;i<yuy2_raw.Length;i=i+4)
+            {
+                us.Add(yuy2_raw[i]);
+            }
+
+            List<byte> vs = new List<byte>();
+            for (int i = 3; i < yuy2_raw.Length; i = i + 4)
+            {
+                vs.Add(yuy2_raw[i]);
+            }
+            for(int i=0; i<yuy2_raw.Length; i=i+4)
+            {
+                var rgb1 = (yuy2_raw[0], yuy2_raw[1], yuy2_raw[2]).ToRGB();
+                var rgb2 = (yuy2_raw[3], yuy2_raw[1], yuy2_raw[2]).ToRGB();
+            }
+
+            var ll = vs.Count + ys.Count + us.Count;
 
             //var yuy2 = new YUY2(yuy2_raw, 720, 404);
             //var rgb = yuy2.ToRGB();
