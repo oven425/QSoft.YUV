@@ -51,12 +51,22 @@ namespace PixelViwer
             {
                 vs.Add(yuy2_raw[i]);
             }
+            List<byte> rgbs = new List<byte>();
             for(int i=0; i<yuy2_raw.Length; i=i+4)
             {
-                var rgb1 = (yuy2_raw[0], yuy2_raw[1], yuy2_raw[2]).ToRGB();
-                var rgb2 = (yuy2_raw[3], yuy2_raw[1], yuy2_raw[2]).ToRGB();
+                var rgb1 = (yuy2_raw[i+0], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
+                var rgb2 = (yuy2_raw[i+2], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
+                rgbs.Add(rgb1.r);
+                rgbs.Add(rgb1.g);
+                rgbs.Add(rgb1.b);
+                rgbs.Add(rgb2.r);
+                rgbs.Add(rgb2.g);
+                rgbs.Add(rgb2.b);
+                
             }
-
+            
+            var bitmapsource = rgbs.ToArray().ToBitmapSource(720, 404);
+            this.image.Source = bitmapsource;
             var ll = vs.Count + ys.Count + us.Count;
 
             //var yuy2 = new YUY2(yuy2_raw, 720, 404);

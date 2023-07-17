@@ -189,5 +189,14 @@ namespace QSoft.ColorSpaceCOnvert
             BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, pf, null, rawImage, rawStride);
             return bitmap;
         }
+
+        public static BitmapSource ToBitmapSource(this byte[] src, int width, int height)
+        {
+            PixelFormat pf = PixelFormats.Rgb24;
+            int rawStride = (width * pf.BitsPerPixel + 7) / 8;
+            byte[] rawImage = src;
+            BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, pf, null, rawImage, rawStride);
+            return bitmap;
+        }
     }
 }
