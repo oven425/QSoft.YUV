@@ -54,52 +54,6 @@ namespace QSoft.ColorSpaceCOnvert
         public ColorSpaces ColorSpace => ColorSpaces.YUV444p;
         public IEnumerable<byte> Y => m_Raw.Take(this.m_Width * this.m_Height);
         public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
-        public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height*2).Take(this.m_Width * this.m_Height);
-        public byte[] Raw => m_Raw;
-        public int Width=> m_Width;
-        public int Height=> m_Height;
-        int m_Width;
-        int m_Height;
-        byte[] m_Raw;
-        public YUY444p(byte[] raw, int width, int height)
-        {
-            this.m_Raw = raw;
-            this.m_Width = width;
-            this.m_Height = height;
-        }
-
-        public byte[] ToRGB()
-        {
-            var rgb = new byte[m_Width*m_Height*3];
-            var y = this.Y.ToArray();
-            var u = this.U.ToArray();
-            var v = this.V.ToArray();
-            int index = 0;
-            for(int i=0; i<y.Length; i++)
-            {
-                double Y = y[i];
-                double V = v[i];
-                double U = u[i];
-                Y -= 16;
-                U -= 128;
-                V -= 128;
-                var R = 1.164 * Y + 1.596 * V;
-                var G = 1.164 * Y - 0.392 * U - 0.813 * V;
-                var B = 1.164 * Y + 2.017 * U;
-                rgb[index + 0] = (byte)(R>255?255:R);
-                rgb[index + 1] = (byte)(G > 255 ? 255 : G);
-                rgb[index + 2] = (byte)(B > 255 ? 255 : B);
-                index = index + 3;
-            }
-
-            return rgb;
-        }
-    }
-
-    public class YUY2
-    {
-        public IEnumerable<byte> Y => m_Raw.Take(this.m_Width * this.m_Height);
-        public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
         public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height * 2).Take(this.m_Width * this.m_Height);
         public byte[] Raw => m_Raw;
         public int Width => m_Width;
@@ -107,7 +61,7 @@ namespace QSoft.ColorSpaceCOnvert
         int m_Width;
         int m_Height;
         byte[] m_Raw;
-        public YUY2(byte[] raw, int width, int height)
+        public YUY444p(byte[] raw, int width, int height)
         {
             this.m_Raw = raw;
             this.m_Width = width;
@@ -140,6 +94,52 @@ namespace QSoft.ColorSpaceCOnvert
 
             return rgb;
         }
+    }
+
+    public class YUY2
+    {
+        public IEnumerable<byte> Y => m_Raw.Take(this.m_Width * this.m_Height);
+        public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
+        public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height * 2).Take(this.m_Width * this.m_Height);
+        public byte[] Raw => m_Raw;
+        public int Width => m_Width;
+        public int Height => m_Height;
+        int m_Width;
+        int m_Height;
+        byte[] m_Raw;
+        public YUY2(byte[] raw, int width, int height)
+        {
+            this.m_Raw = raw;
+            this.m_Width = width;
+            this.m_Height = height;
+        }
+
+        public byte[] ToRGB()
+        {
+            int rgbindex = 0;
+            var rgb = new byte[m_Width * m_Height * 3];
+            for (int i = 0; i < m_Raw.Length; i = i + 4)
+            {
+                var rgb1 = (m_Raw[i + 0], m_Raw[i + 1], m_Raw[i + 3]).ToRGB();
+                var rgb2 = (m_Raw[i + 2], m_Raw[i + 1], m_Raw[i + 3]).ToRGB();
+                rgb[rgbindex + 0] = rgb1.r;
+                rgb[rgbindex + 1] = rgb1.g;
+                rgb[rgbindex + 2] = rgb1.b;
+                rgb[rgbindex + 3] = rgb2.r;
+                rgb[rgbindex + 4] = rgb2.g;
+                rgb[rgbindex + 5] = rgb2.b;
+                rgbindex = rgbindex + 6;
+
+            }
+
+            return rgb;
+        }
+
+    }
+
+    //https://blog.csdn.net/byhook/article/details/84037338
+    public class YUV420P
+    {
 
     }
 

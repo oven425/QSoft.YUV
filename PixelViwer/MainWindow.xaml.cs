@@ -32,47 +32,53 @@ namespace PixelViwer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var yuy2_raw = File.ReadAllBytes("../../../720-404-yuy2.yuv");
-            
-            //var y = yuy2_raw.Where((x, index) => { return index % 2 == 0; }).ToArray();
-            //var v = yuy2_raw.Skip(1).Where((x, index) => { return index % 3 == 0; }).ToArray();
-            List<byte> ys = new List<byte>();
-            for (int i=0; i<yuy2_raw.Length; i=i+2)
-            {
-                ys.Add(yuy2_raw[i]);
-            }
-            List<byte> us = new List<byte>();
-            for(int i=1;i<yuy2_raw.Length;i=i+4)
-            {
-                us.Add(yuy2_raw[i]);
-            }
+            var ys = yuy2_raw.Where((x, index) => index%2==0);
+            var us = yuy2_raw.Skip(1).Where((x, index) => index % 1 == 0);
+            var vs = yuy2_raw.Skip(3).Where((x, index) => index % 3 == 0);
+            var oi = ys.Count() + us.Count() + vs.Count();
+            var a1 = 1;
+            var a2 = 3;
+            var a = a1 % 3;
+            a = 100;
 
-            List<byte> vs = new List<byte>();
-            for (int i = 3; i < yuy2_raw.Length; i = i + 4)
-            {
-                vs.Add(yuy2_raw[i]);
-            }
-            List<byte> rgbs = new List<byte>();
-            for(int i=0; i<yuy2_raw.Length; i=i+4)
-            {
-                var rgb1 = (yuy2_raw[i+0], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
-                var rgb2 = (yuy2_raw[i+2], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
-                rgbs.Add(rgb1.r);
-                rgbs.Add(rgb1.g);
-                rgbs.Add(rgb1.b);
-                rgbs.Add(rgb2.r);
-                rgbs.Add(rgb2.g);
-                rgbs.Add(rgb2.b);
-                
-            }
-            
-            var bitmapsource = rgbs.ToArray().ToBitmapSource(720, 404);
-            this.image.Source = bitmapsource;
-            var ll = vs.Count + ys.Count + us.Count;
+            //List<byte> ys = new List<byte>();
+            //for (int i=0; i<yuy2_raw.Length; i=i+2)
+            //{
+            //    ys.Add(yuy2_raw[i]);
+            //}
+            //List<byte> us = new List<byte>();
+            //for(int i=1;i<yuy2_raw.Length;i=i+4)
+            //{
+            //    us.Add(yuy2_raw[i]);
+            //}
+
+            //List<byte> vs = new List<byte>();
+            //for (int i = 3; i < yuy2_raw.Length; i = i + 4)
+            //{
+            //    vs.Add(yuy2_raw[i]);
+            //}
+            //List<byte> rgbs = new List<byte>();
+            //for(int i=0; i<yuy2_raw.Length; i=i+4)
+            //{
+            //    var rgb1 = (yuy2_raw[i+0], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
+            //    var rgb2 = (yuy2_raw[i+2], yuy2_raw[i + 1], yuy2_raw[i + 3]).ToRGB();
+            //    rgbs.Add(rgb1.r);
+            //    rgbs.Add(rgb1.g);
+            //    rgbs.Add(rgb1.b);
+            //    rgbs.Add(rgb2.r);
+            //    rgbs.Add(rgb2.g);
+            //    rgbs.Add(rgb2.b);
+
+            //}
+
+            //var bitmapsource = rgbs.ToArray().ToBitmapSource(720, 404);
+            //this.image.Source = bitmapsource;
+            //var ll = vs.Count + ys.Count + us.Count;
 
             //var yuy2 = new YUY2(yuy2_raw, 720, 404);
             //var rgb = yuy2.ToRGB();
-
-            //File.WriteAllBytes("rgb", rgb);
+            ////rgb.ToBitmapSource(720, 404);
+            ////File.WriteAllBytes("rgb", rgb);
 
             //image.Source = yuy2.ToBitmapSource();
 
