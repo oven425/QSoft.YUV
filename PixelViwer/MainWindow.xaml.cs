@@ -33,9 +33,20 @@ namespace PixelViwer
         {
             var yuy2_raw = File.ReadAllBytes("../../../720-404-yuy2.yuv");
             var ys = yuy2_raw.Where((x, index) => index%2==0);
-            var us = yuy2_raw.Skip(1).Where((x, index) => index % 1 == 0);
-            var vs = yuy2_raw.Skip(3).Where((x, index) => index % 3 == 0);
-            var oi = ys.Count() + us.Count() + vs.Count();
+            var us = yuy2_raw.Skip(1).Where((x, index) =>
+            {
+                return index % 1 == 0;
+            });
+            var vs = yuy2_raw.Where((x, index) => index % 3 == 0);
+            
+            List<byte> ys1 = new List<byte>();
+            for(int i=0; i<yuy2_raw.Length; i++)
+            {
+                
+            }
+            var ys_count = ys.Count();
+            var us_count = us.Count();
+            var vs_count = vs.Count();
             var a1 = 1;
             var a2 = 3;
             var a = a1 % 3;
