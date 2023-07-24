@@ -15,6 +15,11 @@ ffmpeg -i 720-404-yuy2.jpg -pix_fmt yuyv422 .\a.yuv
 ffmpeg -i 720-404-yuy2.jpg -pix_fmt yuv444p 720-404-yuv444p.yuv
 ```
 
+3. jpg to yuv420p
+```shell
+ffmpeg -i 720-404-yuy2.jpg -pix_fmt yuv420p .\720-404-yuv420p.rgb
+```
+
 2. jpg to rgb24
 ```shell
 ffmpeg -i 720-404-yuy2.jpg -pix_fmt rgb24 .\720-404-rgb24.rgb

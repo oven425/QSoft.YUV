@@ -98,10 +98,9 @@ namespace QSoft.ColorSpaceCOnvert
 
     public class YUY2
     {
-        public IEnumerable<byte> Y => m_Raw.Take(this.m_Width * this.m_Height);
-        public IEnumerable<byte> U => m_Raw.Skip(this.m_Width * this.m_Height).Take(this.m_Width * this.m_Height);
-        public IEnumerable<byte> V => m_Raw.Skip(this.m_Width * this.m_Height * 2).Take(this.m_Width * this.m_Height);
-        public byte[] Raw => m_Raw;
+        public IEnumerable<byte> Y => m_Raw.Where((x, index) => index % 2 == 0);
+        public IEnumerable<byte> U => m_Raw.Where((x, index) => index % 4 == 1);
+        public IEnumerable<byte> V => m_Raw.Where((x, index) => index % 4 == 3);
         public int Width => m_Width;
         public int Height => m_Height;
         int m_Width;

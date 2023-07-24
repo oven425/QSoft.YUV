@@ -31,22 +31,11 @@ namespace PixelViwer
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var yuy2_raw = File.ReadAllBytes("../../../720-404-yuy2.yuv");
-            var ys = yuy2_raw.Where((x, index) => index%2==0);
-            var us = yuy2_raw.Skip(1).Where((x, index) =>
-            {
-                return index % 1 == 0;
-            });
-            var vs = yuy2_raw.Where((x, index) => index % 3 == 0);
-            
-            List<byte> ys1 = new List<byte>();
-            for(int i=0; i<yuy2_raw.Length; i++)
-            {
-                
-            }
-            var ys_count = ys.Count();
-            var us_count = us.Count();
-            var vs_count = vs.Count();
+            int w = 720;
+            int h = 404;
+            var yuv420p_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
+            var ys = yuv420p_raw.Take(w * h * 2);
+
             var a1 = 1;
             var a2 = 3;
             var a = a1 % 3;
