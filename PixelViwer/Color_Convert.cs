@@ -41,13 +41,23 @@ namespace QSoft.ColorSpaceCOnvert
         byte[] Raw { get; }
     }
 
-    //public interface IRGB
-    //{
-    //    IEnumerable<byte> R { get; }
-    //    IEnumerable<byte> G { get; }
-    //    IEnumerable<byte> B { get; }
-    //    byte[] Raw { get; }
-    //}
+    public class NV12
+    {
+        public IEnumerable<byte> Y => m_Raw.Where((x, index) => index % 2 == 0);
+        public IEnumerable<byte> U => m_Raw.Where((x, index) => index % 4 == 1);
+        public IEnumerable<byte> V => m_Raw.Where((x, index) => index % 4 == 3);
+        public int Width => m_Width;
+        public int Height => m_Height;
+        int m_Width;
+        int m_Height;
+        byte[] m_Raw;
+        public NV12(byte[] raw, int width, int height)
+        {
+            this.m_Raw = raw;
+            this.m_Width = width;
+            this.m_Height = height;
+        }
+    }
 
     public class YUY444p : IYUV
     {

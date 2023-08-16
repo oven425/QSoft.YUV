@@ -33,13 +33,13 @@ namespace PixelViwer
         {
             int w = 720;
             int h = 404;
-            var yuv420p_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
-            var ys = yuv420p_raw.Take(w * h * 2);
+            //var yuv420p_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
+            //var ys = yuv420p_raw.Take(w * h * 2);
 
-            var a1 = 1;
-            var a2 = 3;
-            var a = a1 % 3;
-            a = 100;
+
+
+            var nv12_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
+
 
             //List<byte> ys = new List<byte>();
             //for (int i=0; i<yuy2_raw.Length; i=i+2)
