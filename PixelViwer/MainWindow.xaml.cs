@@ -94,14 +94,16 @@ namespace PixelViwer
             {
                 for (int x = 0; x < w; x = x + 2)
                 {
-                    var y1 = nv12_raw[x + 0];
-                    var y2 = nv12_raw[x + 1];
-                    var y3 = nv12_raw[x + 0 + y * w];
-                    var y4 = nv12_raw[x + 1 + y * w];
+                    var y1 = nv12_raw[x + 0 + y * w];
+                    var y2 = nv12_raw[x + 1 + y * w];
+                    var y3 = nv12_raw[x + 0 + (y+1) * w];
+                    var y4 = nv12_raw[x + 1 + (y+1) * w];
 
                     byte u = nv12_raw[uv_index + 0];
                     byte v = nv12_raw[uv_index + 1];
                     var rgb1 = (y: y1, u: u, v: v).ToRGB();
+                    rgbindex = x + 0 + y * w;
+                    rgbindex = rgbindex * 3;
                     rgb[rgbindex + 0] = rgb1.r;
                     rgb[rgbindex + 1] = rgb1.g;
                     rgb[rgbindex + 2] = rgb1.b;
@@ -110,18 +112,17 @@ namespace PixelViwer
                     rgb[rgbindex + 4] = rgb2.g;
                     rgb[rgbindex + 5] = rgb2.b;
                     var rgb3 = (y: y3, u: u, v: v).ToRGB();
-                    rgb[rgbindex + 6] = rgb3.r;
-                    rgb[rgbindex + 7] = rgb3.g;
-                    rgb[rgbindex + 8] = rgb3.b;
+                    rgbindex = x + 0 + (y + 1) * w;
+                    rgbindex = rgbindex * 3;
+                    rgb[rgbindex + 0] = rgb3.r;
+                    rgb[rgbindex + 1] = rgb3.g;
+                    rgb[rgbindex + 2] = rgb3.b;
                     var rgb4 = (y: y4, u: u, v: v).ToRGB();
-                    rgb[rgbindex + 9] = rgb4.r;
-                    rgb[rgbindex + 10] = rgb4.g;
-                    rgb[rgbindex + 11] = rgb4.b;
+                    rgb[rgbindex + 3] = rgb4.r;
+                    rgb[rgbindex + 4] = rgb4.g;
+                    rgb[rgbindex + 5] = rgb4.b;
                     rgbindex = rgbindex + 12;
-
-
                     uv_index = uv_index + 2;
-                    //llll.Add((new byte[] { y1, y2, y3, y4 }, 0, 0));
                 }
             }
                 
