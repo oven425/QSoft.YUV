@@ -27,18 +27,156 @@ namespace PixelViwer
         {
             InitializeComponent();
         }
+        void NV12ToRGB(byte[] nv12, byte[] rgb, int width, int height)
+        {
+            int size = width * height;
+            int w, h, x, y, u, v, yIndex, uvIndex, rIndex, gIndex, bIndex;
+            int y1192, r, g, b, uv448, uv_128;
+            for (h = 0; h < height; h++)
+            {
+                for (w = 0; w < width; w++)
+                {
+                    yIndex = h * width + w;
+                    uvIndex = (h / 2) * width + (w & (-2)) + size;
+                    u = nv12[uvIndex];
+                    v = nv12[uvIndex + 1];
+                    y1192 = 1192 * (nv12[yIndex] - 16);
+                    uv448 = 448 * (u - 128);
+                    uv_128 = 128 * (v - 128);
+                    r = (y1192 + uv448) >> 10;
+                    g = (y1192 - uv_128 - uv448) >> 10;
+                    b = (y1192 + uv_128) >> 10;
+                    if (r < 0) r = 0;
+                    if (g < 0) g = 0;
+                    if (b < 0) b = 0;
+                    if (r > 255) r = 255;
+                    if (g > 255) g = 255;
+                    if (b > 255) b = 255;
+                    rIndex = yIndex * 3;
+                    gIndex = rIndex + 1;
+                    bIndex = gIndex + 1;
+                    rgb[rIndex] = (byte)r;
+                    rgb[gIndex] = (byte)g;
+                    rgb[bIndex] = (byte)b;
+                }
+            }
+        }
 
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            BitmapImage bmp_src = new BitmapImage();
+            bmp_src.BeginInit();
+            bmp_src.StreamSource = File.OpenRead("../../../720-404-yuy2.jpg");
+            bmp_src.EndInit();
+            this.image_src.Source = bmp_src;
             int w = 720;
             int h = 404;
             //var yuv420p_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
             //var ys = yuv420p_raw.Take(w * h * 2);
 
 
+            var nv12_raw = File.ReadAllBytes("../../../720-404-nv12.yuv");
 
-            var nv12_raw = File.ReadAllBytes("../../../720-404-yuv420p.yuv");
+            //var ys = nv12_raw.Take(720 * 404).ToList();
+            //var uvs = nv12_raw.Skip(720 * 404).ToList();
+            //var us = uvs.Where((x, index) => index % 2 == 0);
+            //var vs = uvs.Where((x, index) => index % 2 == 0);
+
+            int rgbindex = 0;
+            var rgb = new byte[720 * 404 * 3];
+            //NV12ToRGB(nv12_raw, rgb, 720, 404);
+            int uv_offset = 720 * 404;
+            int uv_index = uv_offset;
+            int y_index = 0;
+            List<(byte[], byte, byte)> llll = new List<(byte[], byte, byte)>();
+            for (int y = 0; y < h; y=y+2)
+            {
+                for (int x = 0; x < w; x = x + 2)
+                {
+                    var y1 = nv12_raw[x + 0];
+                    var y2 = nv12_raw[x + 1];
+                    var y3 = nv12_raw[x + 0 + y * w];
+                    var y4 = nv12_raw[x + 1 + y * w];
+
+                    byte u = nv12_raw[uv_index + 0];
+                    byte v = nv12_raw[uv_index + 1];
+                    var rgb1 = (y: y1, u: u, v: v).ToRGB();
+                    rgb[rgbindex + 0] = rgb1.r;
+                    rgb[rgbindex + 1] = rgb1.g;
+                    rgb[rgbindex + 2] = rgb1.b;
+                    var rgb2 = (y: y2, u: u, v: v).ToRGB();
+                    rgb[rgbindex + 3] = rgb2.r;
+                    rgb[rgbindex + 4] = rgb2.g;
+                    rgb[rgbindex + 5] = rgb2.b;
+                    var rgb3 = (y: y3, u: u, v: v).ToRGB();
+                    rgb[rgbindex + 6] = rgb3.r;
+                    rgb[rgbindex + 7] = rgb3.g;
+                    rgb[rgbindex + 8] = rgb3.b;
+                    var rgb4 = (y: y4, u: u, v: v).ToRGB();
+                    rgb[rgbindex + 9] = rgb4.r;
+                    rgb[rgbindex + 10] = rgb4.g;
+                    rgb[rgbindex + 11] = rgb4.b;
+                    rgbindex = rgbindex + 12;
+
+
+                    uv_index = uv_index + 2;
+                    //llll.Add((new byte[] { y1, y2, y3, y4 }, 0, 0));
+                }
+            }
+                
+            //for (int y=0; y<h; y++)
+            //{
+            //    int uv___ = y / 2;
+            //    for(int x=0; x<w; x=x+2)
+            //    {
+            //        var j = y / 2;
+            //        uv_index = uv_offset + j * 2;
+            //        byte u = nv12_raw[uv_index + 0];
+            //        byte v = nv12_raw[uv_index + 1];
+            //        var rgb1 = (y: nv12_raw[y_index+0], u: u, v: v).ToRGB();
+            //        rgb[rgbindex + 0] = rgb1.r;
+            //        rgb[rgbindex + 1] = rgb1.g;
+            //        rgb[rgbindex + 2] = rgb1.b;
+            //        var rgb2 = (y: nv12_raw[y_index + 1], u: u, v: v).ToRGB();
+            //        rgb[rgbindex + 3] = rgb2.r;
+            //        rgb[rgbindex + 4] = rgb2.g;
+            //        rgb[rgbindex + 5] = rgb2.b;
+            //        y_index = y_index + 2;
+            //        rgbindex = rgbindex + 6;
+            //    }
+            //}
+
+            //int uv_offset = 720 * 404;
+            //int uv_index = 0;
+            //for (int i = 0; i < uv_offset; i = i + 4)
+            //{
+            //    var j = i / 4;
+            //    uv_index = uv_offset + j * 2;
+            //    byte u = nv12_raw[uv_index + 0];
+            //    byte v = nv12_raw[uv_index + 1];
+            //    var rgb1 = (y: nv12_raw[i + 0], u: u, v: v).ToRGB();
+            //    rgb[rgbindex + 0] = rgb1.r;
+            //    rgb[rgbindex + 1] = rgb1.g;
+            //    rgb[rgbindex + 2] = rgb1.b;
+            //    var rgb2 = (y: nv12_raw[i + 1], u: u, v: v).ToRGB();
+            //    rgb[rgbindex + 3] = rgb2.r;
+            //    rgb[rgbindex + 4] = rgb2.g;
+            //    rgb[rgbindex + 5] = rgb2.b;
+            //    var rgb3 = (y: nv12_raw[i + 2], u: u, v: v).ToRGB();
+            //    rgb[rgbindex + 6] = rgb3.r;
+            //    rgb[rgbindex + 7] = rgb3.g;
+            //    rgb[rgbindex + 8] = rgb3.b;
+            //    var rgb4 = (y: nv12_raw[i + 3], u: u, v: v).ToRGB();
+            //    rgb[rgbindex + 9] = rgb4.r;
+            //    rgb[rgbindex + 10] = rgb4.g;
+            //    rgb[rgbindex + 11] = rgb4.b;
+            //    rgbindex = rgbindex + 12;
+            //}
+
+            var bitmapsource = rgb.ToBitmapSource(720, 404);
+            this.image.Source = bitmapsource;
+
 
 
             //List<byte> ys = new List<byte>();
@@ -133,7 +271,48 @@ namespace PixelViwer
             //Color_Convert convert = new Color_Convert();
             //convert.ToRGB()
         }
+
+        //void NV12ToRGB(byte[] nv12, byte[] rgb, int width, int height)
+        //{
+        //    int size = width * height;
+        //    int w, h, x, y, u, v, yIndex, uvIndex, rIndex, gIndex, bIndex;
+        //    int y1192, r, g, b, uv448, uv_128;
+        //    for (h = 0; h < height; h++)
+        //    {
+        //        for (w = 0; w < width; w++)
+        //        {
+        //            yIndex = h * width + w;
+        //            uvIndex = (h / 2) * width + (w & (-2)) + size;
+        //            u = nv12[uvIndex];
+        //            v = nv12[uvIndex + 1];
+        //            // YUV to RGB
+        //            y1192 = 1192 * (nv12[yIndex] - 16);
+        //            uv448 = 448 * (u - 128);
+        //            uv_128 = 128 * (v - 128);
+        //            r = (y1192 + uv448) >> 10;
+        //            g = (y1192 - uv_128 - uv448) >> 10;
+        //            b = (y1192 + uv_128) >> 10;
+        //            // RGB clipping
+        //            if (r < 0) r = 0;
+        //            if (g < 0) g = 0;
+        //            if (b < 0) b = 0;
+        //            if (r > 255) r = 255;
+        //            if (g > 255) g = 255;
+        //            if (b > 255) b = 255;
+        //            // Save RGB values
+        //            rIndex = yIndex * 3;
+        //            gIndex = rIndex + 1;
+        //            bIndex = gIndex + 1;
+        //            rgb[rIndex] = (byte)r;
+        //            rgb[gIndex] = (byte)g;
+        //            rgb[bIndex] = (byte)b;
+        //        }
+        //    }
+        //}
+
     }
+
+
     //ffmpeg -i 123.jpg -pix_fmt yuyv422 123.yuv
     public class MainUI : INotifyPropertyChanged
     {

@@ -129,8 +129,8 @@ namespace QSoft.ColorSpaceCOnvert
             var rgb = new byte[m_Width * m_Height * 3];
             for (int i = 0; i < m_Raw.Length; i = i + 4)
             {
-                var rgb1 = (m_Raw[i + 0], m_Raw[i + 1], m_Raw[i + 3]).ToRGB();
-                var rgb2 = (m_Raw[i + 2], m_Raw[i + 1], m_Raw[i + 3]).ToRGB();
+                var rgb1 = (y:m_Raw[i + 0], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
+                var rgb2 = (y:m_Raw[i + 2], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
                 rgb[rgbindex + 0] = rgb1.r;
                 rgb[rgbindex + 1] = rgb1.g;
                 rgb[rgbindex + 2] = rgb1.b;
@@ -156,18 +156,52 @@ namespace QSoft.ColorSpaceCOnvert
     {
         public static (byte r,byte g,byte b) ToRGB(this (byte y, byte u, byte v) src)
         {
-            double Y = src.y;
-            double V = src.v;
-            double U = src.u;
-            Y -= 16;
-            U -= 128;
-            V -= 128;
-            var R = 1.164 * Y + 1.596 * V;
-            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
-            var B = 1.164 * Y + 2.017 * U;
-            var r = (byte)(R > 255 ? 255 : R);
-            var g = (byte)(G > 255 ? 255 : G);
-            var b = (byte)(B > 255 ? 255 : B);
+            var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
+
+            var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
+
+            var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
+
+            //double Y = src.y;
+            //double V = src.v;
+            //double U = src.u;
+            //Y -= 16;
+            //U -= 128;
+            //V -= 128;
+            //var R = 1.164 * Y + 1.596 * V;
+            //var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            //var B = 1.164 * Y + 2.017 * U;
+            if (R > 255.0)
+            {
+                R = 255;
+            }
+            else if (R < 0)
+            {
+                R = 0;
+            }
+            if (G > 255.0)
+            {
+                G = 255;
+            }
+            else if (G < 0)
+            {
+                G = 0;
+            }
+            if (B > 255.0)
+            {
+                B = 255;
+            }
+            else if (B < 0)
+            {
+                B = 0;
+            }
+            var r = (byte)R;
+            var g = (byte)G;
+            var b = (byte)B;
+
+            //var r = (byte)(R > 255 ? 255 : R);
+            //var g = (byte)(G > 255 ? 255 : G);
+            //var b = (byte)(B > 255 ? 255 : B);
             return (r,g,b);
         }
             
