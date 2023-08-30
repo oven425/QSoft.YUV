@@ -42,7 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="YUV.cs" />
     <Compile Include="YUVExtension.cs" />
+    <Compile Include="YUY2.cs" />
+    <Compile Include="YUY444P.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
