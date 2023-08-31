@@ -95,5 +95,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QSoft.YUV\QSoft.YUV.csproj">
+      <Project>{e1ae2733-25e2-42d4-a39d-16b163a80b61}</Project>
+      <Name>QSoft.YUV</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -106,45 +106,45 @@ namespace QSoft.ColorSpaceCOnvert
         }
     }
 
-    public class YUY2
-    {
-        public IEnumerable<byte> Y => m_Raw.Where((x, index) => index % 2 == 0);
-        public IEnumerable<byte> U => m_Raw.Where((x, index) => index % 4 == 1);
-        public IEnumerable<byte> V => m_Raw.Where((x, index) => index % 4 == 3);
-        public int Width => m_Width;
-        public int Height => m_Height;
-        int m_Width;
-        int m_Height;
-        byte[] m_Raw;
-        public YUY2(byte[] raw, int width, int height)
-        {
-            this.m_Raw = raw;
-            this.m_Width = width;
-            this.m_Height = height;
-        }
+    //public class YUY2
+    //{
+    //    public IEnumerable<byte> Y => m_Raw.Where((x, index) => index % 2 == 0);
+    //    public IEnumerable<byte> U => m_Raw.Where((x, index) => index % 4 == 1);
+    //    public IEnumerable<byte> V => m_Raw.Where((x, index) => index % 4 == 3);
+    //    public int Width => m_Width;
+    //    public int Height => m_Height;
+    //    int m_Width;
+    //    int m_Height;
+    //    byte[] m_Raw;
+    //    public YUY2(byte[] raw, int width, int height)
+    //    {
+    //        this.m_Raw = raw;
+    //        this.m_Width = width;
+    //        this.m_Height = height;
+    //    }
 
-        public byte[] ToRGB()
-        {
-            int rgbindex = 0;
-            var rgb = new byte[m_Width * m_Height * 3];
-            for (int i = 0; i < m_Raw.Length; i = i + 4)
-            {
-                var rgb1 = (y:m_Raw[i + 0], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
-                var rgb2 = (y:m_Raw[i + 2], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
-                rgb[rgbindex + 0] = rgb1.r;
-                rgb[rgbindex + 1] = rgb1.g;
-                rgb[rgbindex + 2] = rgb1.b;
-                rgb[rgbindex + 3] = rgb2.r;
-                rgb[rgbindex + 4] = rgb2.g;
-                rgb[rgbindex + 5] = rgb2.b;
-                rgbindex = rgbindex + 6;
+    //    public byte[] ToRGB()
+    //    {
+    //        int rgbindex = 0;
+    //        var rgb = new byte[m_Width * m_Height * 3];
+    //        for (int i = 0; i < m_Raw.Length; i = i + 4)
+    //        {
+    //            var rgb1 = (y:m_Raw[i + 0], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
+    //            var rgb2 = (y:m_Raw[i + 2], u:m_Raw[i + 1], v:m_Raw[i + 3]).ToRGB();
+    //            rgb[rgbindex + 0] = rgb1.r;
+    //            rgb[rgbindex + 1] = rgb1.g;
+    //            rgb[rgbindex + 2] = rgb1.b;
+    //            rgb[rgbindex + 3] = rgb2.r;
+    //            rgb[rgbindex + 4] = rgb2.g;
+    //            rgb[rgbindex + 5] = rgb2.b;
+    //            rgbindex = rgbindex + 6;
 
-            }
+    //        }
 
-            return rgb;
-        }
+    //        return rgb;
+    //    }
 
-    }
+    //}
 
     //https://blog.csdn.net/byhook/article/details/84037338
     public class YUV420P
@@ -152,60 +152,60 @@ namespace QSoft.ColorSpaceCOnvert
 
     }
 
-    public static class YUVEx
-    {
-        public static (byte r,byte g,byte b) ToRGB(this (byte y, byte u, byte v) src)
-        {
-            var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
+    //public static class YUVEx
+    //{
+    //    public static (byte r,byte g,byte b) ToRGB(this (byte y, byte u, byte v) src)
+    //    {
+    //        var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
 
-            var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
+    //        var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
 
-            var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
+    //        var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
 
-            //double Y = src.y;
-            //double V = src.v;
-            //double U = src.u;
-            //Y -= 16;
-            //U -= 128;
-            //V -= 128;
-            //var R = 1.164 * Y + 1.596 * V;
-            //var G = 1.164 * Y - 0.392 * U - 0.813 * V;
-            //var B = 1.164 * Y + 2.017 * U;
-            if (R > 255.0)
-            {
-                R = 255;
-            }
-            else if (R < 0)
-            {
-                R = 0;
-            }
-            if (G > 255.0)
-            {
-                G = 255;
-            }
-            else if (G < 0)
-            {
-                G = 0;
-            }
-            if (B > 255.0)
-            {
-                B = 255;
-            }
-            else if (B < 0)
-            {
-                B = 0;
-            }
-            var r = (byte)R;
-            var g = (byte)G;
-            var b = (byte)B;
+    //        //double Y = src.y;
+    //        //double V = src.v;
+    //        //double U = src.u;
+    //        //Y -= 16;
+    //        //U -= 128;
+    //        //V -= 128;
+    //        //var R = 1.164 * Y + 1.596 * V;
+    //        //var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+    //        //var B = 1.164 * Y + 2.017 * U;
+    //        if (R > 255.0)
+    //        {
+    //            R = 255;
+    //        }
+    //        else if (R < 0)
+    //        {
+    //            R = 0;
+    //        }
+    //        if (G > 255.0)
+    //        {
+    //            G = 255;
+    //        }
+    //        else if (G < 0)
+    //        {
+    //            G = 0;
+    //        }
+    //        if (B > 255.0)
+    //        {
+    //            B = 255;
+    //        }
+    //        else if (B < 0)
+    //        {
+    //            B = 0;
+    //        }
+    //        var r = (byte)R;
+    //        var g = (byte)G;
+    //        var b = (byte)B;
 
-            //var r = (byte)(R > 255 ? 255 : R);
-            //var g = (byte)(G > 255 ? 255 : G);
-            //var b = (byte)(B > 255 ? 255 : B);
-            return (r,g,b);
-        }
+    //        //var r = (byte)(R > 255 ? 255 : R);
+    //        //var g = (byte)(G > 255 ? 255 : G);
+    //        //var b = (byte)(B > 255 ? 255 : B);
+    //        return (r,g,b);
+    //    }
             
-    }
+    //}
 
     
 
@@ -222,16 +222,16 @@ namespace QSoft.ColorSpaceCOnvert
             return bitmap;
         }
 
-        public static BitmapSource ToBitmapSource(this YUY2 src)
-        {
-            PixelFormat pf = PixelFormats.Rgb24;
-            int width = src.Width;
-            int height = src.Height;
-            int rawStride = (width * pf.BitsPerPixel + 7) / 8;
-            byte[] rawImage = src.ToRGB();
-            BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, pf, null, rawImage, rawStride);
-            return bitmap;
-        }
+        //public static BitmapSource ToBitmapSource(this YUY2 src)
+        //{
+        //    PixelFormat pf = PixelFormats.Rgb24;
+        //    int width = src.Width;
+        //    int height = src.Height;
+        //    int rawStride = (width * pf.BitsPerPixel + 7) / 8;
+        //    byte[] rawImage = src.ToRGB();
+        //    BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, pf, null, rawImage, rawStride);
+        //    return bitmap;
+        //}
 
         public static BitmapSource ToBitmapSource(this byte[] src, int width, int height)
         {

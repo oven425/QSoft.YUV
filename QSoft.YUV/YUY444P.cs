@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QSoft.YUV
 {
-    public class YUY444P : YUV
+    public class YUV444P : YUV
     {
-        public YUY444P(byte[] raw, int width, int height) 
+        public YUV444P(byte[] raw, int width, int height) 
             : base(raw, width, height)
         {
         }
@@ -26,18 +26,10 @@ namespace QSoft.YUV
             int index = 0;
             for (int i = 0; i < y.Length; i++)
             {
-                double Y = y[i];
-                double V = v[i];
-                double U = u[i];
-                Y -= 16;
-                U -= 128;
-                V -= 128;
-                var R = 1.164 * Y + 1.596 * V;
-                var G = 1.164 * Y - 0.392 * U - 0.813 * V;
-                var B = 1.164 * Y + 2.017 * U;
-                rgb[index + 0] = (byte)(R > 255 ? 255 : R);
-                rgb[index + 1] = (byte)(G > 255 ? 255 : G);
-                rgb[index + 2] = (byte)(B > 255 ? 255 : B);
+                var rgbs = (y[i], u[i], v[i]).ToRGB();
+                rgb[index + 0] = rgbs.r;
+                rgb[index + 1] = rgbs.g;
+                rgb[index + 2] = rgbs.b;
                 index = index + 3;
             }
 
