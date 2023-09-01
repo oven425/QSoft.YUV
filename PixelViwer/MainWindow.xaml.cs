@@ -34,13 +34,13 @@ namespace PixelViwer
         {
             BitmapImage bmp_src = new BitmapImage();
             bmp_src.BeginInit();
-            bmp_src.StreamSource = File.OpenRead("../../../720-404-yuy2.jpg");
+            bmp_src.StreamSource = File.OpenRead("../../../s1.jpg");
             bmp_src.EndInit();
             this.image_src.Source = bmp_src;
 
-            byte[] yuv444p_raw = File.ReadAllBytes("../../../720-404-yuv444p.yuv");
-            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 720,404);
-            this.image.Source = yuv444p.ToRGB().ToBitmapSource(720, 404);
+            byte[] yuv444p_raw = File.ReadAllBytes("../../../s1-yuv444p.yuv");
+            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000,3376);
+            this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
 
             return;
             
