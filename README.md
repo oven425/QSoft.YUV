@@ -1,5 +1,5 @@
-# PixelViwer
-## 參考資料
+# QSoft.YUV
+## 
 https://paaatrick.com/2020-01-26-yuv-pixel-formats/
 ## ffmpeg support pixel format
 ```shell

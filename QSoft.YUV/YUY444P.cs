@@ -23,7 +23,7 @@ namespace QSoft.YUV
             var y = this.Y.ToArray();
             var u = this.U.ToArray();
             var v = this.V.ToArray();
-            //Parallel.For
+
             int index = 0;
             for (int i = 0; i < y.Length; i++)
             {
