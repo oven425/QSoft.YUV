@@ -16,6 +16,7 @@ using System.ComponentModel;
 using QSoft.ColorSpaceCOnvert;
 using System.IO;
 using QSoft.YUV;
+using System.Numerics;
 
 namespace PixelViwer
 {
@@ -39,7 +40,10 @@ namespace PixelViwer
             this.image_src.Source = bmp_src;
 
             byte[] yuv444p_raw = File.ReadAllBytes("../../../s1-yuv444p.yuv");
-            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000,3376);
+            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000,3376, ((byte y,byte u,byte v)yuv)=>
+            {
+                return (0, 0, 0);
+            });
             this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
 
             return;

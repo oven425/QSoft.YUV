@@ -14,12 +14,17 @@ namespace QSoft.YUV
         abstract public IEnumerable<byte> Y {  get; }
         abstract public IEnumerable<byte> U { get; }
         abstract public IEnumerable<byte> V { get; }
-        public YUV(byte[] raw, int width, int height)
+        protected Func<(byte y, byte u, byte v), (byte r, byte g, byte b)> Func_yuv2rgb = YUVEx.ToRGB;
+        public YUV(byte[] raw, int width, int height, Func<(byte y, byte u, byte v), (byte y, byte u, byte v)> yuv2rgbfunc)
         {
             this.Width = width;
             this.Height = height;
             Raw = new byte[raw.Length];
             Array.Copy(raw, Raw, raw.Length);
+            if(yuv2rgbfunc != null)
+            {
+                this.Func_yuv2rgb = yuv2rgbfunc;
+            }
         }
 
         abstract public byte[] ToRGB();
