@@ -30,9 +30,92 @@ namespace PixelViwer
             InitializeComponent();
         }
 
+        byte rgb11(double src)
+        {
+            if(src>byte.MaxValue)
+            {
+                return 255;
+            }
+            else if(src< byte.MinValue)
+            {
+                return 0;
+            }
+            
+            return (byte)src;
+        }
+
+        byte rgb11(int src)
+        {
+            if (src > byte.MaxValue)
+            {
+                return 255;
+            }
+            else if (src < byte.MinValue)
+            {
+                return 0;
+            }
+
+            return (byte)src;
+        }
+
+        (byte r, byte g, byte b)  yuv2rgb_1((byte y, byte u, byte v)src)
+        {
+            double Y = src.y;
+            double V = src.v;
+            double U = src.u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+            var R = 1.164 * Y + 1.596 * V;
+            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            var B = 1.164 * Y + 2.017 * U;
+
+            var r = rgb11(R);
+            var g = rgb11(G);
+            var b = rgb11(B);
+            return (r, g, b);
+        }
+
+        (byte r, byte g, byte b) yuv2rgb_2((byte y, byte u, byte v) src)
+        {
+            //return (0, 0, 0);
+            int Y = src.y;
+            int V = src.v;
+            int U = src.u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+            var R = 74 * Y + 102 * V;
+            var G = 74 * Y - 25 * U - 52 * V;
+            var B = 74 * Y + 129 * U;
+
+            var r = rgb11(R>>6);
+            var g = rgb11(G>>6);
+            var b = rgb11(B >> 6);
+            return (r, g, b);
+        }
+
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            var width1 = 6000;
+            var height1 = 3376;
+            var buf = new byte[width1 * height1 * 3];
+            var sw1 = System.Diagnostics.Stopwatch.StartNew();
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < buf.Length; j++)
+                {
+
+                }
+                //foreach(var oo in buf)
+                //{
+
+                //}
+            }
+            sw1.Stop();
+            System.Diagnostics.Trace.WriteLine(sw1.ElapsedMilliseconds / 10);
+            return;
             BitmapImage bmp_src = new BitmapImage();
             bmp_src.BeginInit();
             bmp_src.StreamSource = File.OpenRead("../../../s1.jpg");
@@ -40,10 +123,14 @@ namespace PixelViwer
             this.image_src.Source = bmp_src;
 
             byte[] yuv444p_raw = File.ReadAllBytes("../../../s1-yuv444p.yuv");
-            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000,3376, ((byte y,byte u,byte v)yuv)=>
+            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000, 3376, yuv2rgb_2);
+            var sw= System.Diagnostics.Stopwatch.StartNew();
+            for(int i=0; i<10; i++)
             {
-                return (0, 0, 0);
-            });
+                var rgb111 = yuv444p.ToRGB();
+            }
+            sw.Stop();
+            System.Diagnostics.Trace.WriteLine(sw.ElapsedMilliseconds / 10);
             this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
 
             return;
