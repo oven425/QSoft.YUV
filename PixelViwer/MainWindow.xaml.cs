@@ -100,53 +100,10 @@ namespace PixelViwer
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var source = Enumerable.Range(0, 6000*3376*2).ToArray();
-
-            // Partition the entire source array.
-            var rangePartitioner = Partitioner.Create(0, source.Length);
-
-            double[] results = new double[source.Length];
-            var sw1 = System.Diagnostics.Stopwatch.StartNew();
-            //// Loop over the partitions in parallel.
-            //Parallel.ForEach(rangePartitioner, (range, loopState) =>
-            //{
-            //    // Loop over each range element without a delegate invocation.
-            //    for (int i = range.Item1; i < range.Item2; i++)
-            //    {
-            //        results[i] = source[i] * Math.PI;
-            //    }
-            //});
-
-            foreach (var range in rangePartitioner.GetOrderableDynamicPartitions())
-            {
-                for (int i = range.Value.Item1; i < range.Value.Item2; i++)
-                {
-                    results[i] = source[i] * Math.PI;
-                }
-            }
-            sw1.Stop();
-            System.Diagnostics.Trace.WriteLine(sw1.ElapsedMilliseconds / 10);
-
-
-            //var width1 = 6000;
-            //var height1 = 3376;
-            //var buf = new byte[width1 * height1 * 3];
-            //var sw1 = System.Diagnostics.Stopwatch.StartNew();
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    //for (int j = 0; j < buf.Length; j++)
-            //    //{
-
-            //    //}
-            //    var result = Parallel.For(0, buf.Length, (x) =>
-            //    {
-
-            //    });
-            //}
-            //sw1.Stop();
-            //System.Diagnostics.Trace.WriteLine(sw1.ElapsedMilliseconds / 10);
-            return;
+            var ssss = System.Numerics.Vector.IsHardwareAccelerated;
+            var v1 = new Vector2(0.1f, 0.2f);
+            var v2 = new Vector2(1.1f, 2.2f);
+            var vResult = v1 + v2;
             BitmapImage bmp_src = new BitmapImage();
             bmp_src.BeginInit();
             bmp_src.StreamSource = File.OpenRead("../../../s1.jpg");
