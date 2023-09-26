@@ -80,7 +80,7 @@ namespace PixelViwer
 
         (byte r, byte g, byte b) yuv2rgb_2((byte y, byte u, byte v) src)
         {
-            //return (0, 0, 0);
+            return (0, 0, 0);
             int Y = src.y;
             int V = src.v;
             int U = src.u;
@@ -100,10 +100,21 @@ namespace PixelViwer
         MainUI m_MainUI;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var ssss = System.Numerics.Vector.IsHardwareAccelerated;
-            var v1 = new Vector2(0.1f, 0.2f);
-            var v2 = new Vector2(1.1f, 2.2f);
-            var vResult = v1 + v2;
+            //var ssss = System.Numerics.Vector.IsHardwareAccelerated;
+            //int len1 = 6000 * 3000 * 2;
+            //var sw1 = System.Diagnostics.Stopwatch.StartNew();
+            //for (int i = 0; i<len1; i++)
+            //{
+            //    var v1 = new Vector2((float)0.1, (float)0.1);
+            //    var v2 = new Vector2((float)3.1, (float)4.1);
+            //    var vResult = v1 * v2;
+
+            //    //var ff = 0.1 * 3.1;
+            //    //var fff = 0.1 * 4.1;
+            //}
+            //sw1.Stop();
+
+
             BitmapImage bmp_src = new BitmapImage();
             bmp_src.BeginInit();
             bmp_src.StreamSource = File.OpenRead("../../../s1.jpg");
@@ -113,13 +124,13 @@ namespace PixelViwer
             byte[] yuv444p_raw = File.ReadAllBytes("../../../s1-yuv444p.yuv");
             var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000, 3376, yuv2rgb_2);
             var sw= System.Diagnostics.Stopwatch.StartNew();
-            for(int i=0; i<10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var rgb111 = yuv444p.ToRGB();
             }
             sw.Stop();
-            System.Diagnostics.Trace.WriteLine(sw.ElapsedMilliseconds / 10);
-            this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
+            System.Diagnostics.Trace.WriteLine(sw.ElapsedMilliseconds/10);
+            //this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
 
             return;
             
