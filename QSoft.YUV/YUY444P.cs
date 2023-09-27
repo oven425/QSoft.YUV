@@ -36,6 +36,12 @@ namespace QSoft.YUV
             b = 0;g = 0;
         }
 
+        void RGB1(byte y, byte u, byte v, ref byte r, ref byte g, ref byte b)
+        {
+            r = 0;
+            b = 0; g = 0;
+        }
+
         public override byte[] ToRGB()
         {
             var rgb = new byte[this.Width * this.Height * 3];
@@ -49,15 +55,22 @@ namespace QSoft.YUV
             int u_index = this.Width * this.Height;
             int v_index = this.Width * this.Height*2;
             //Span<byte> m_Span = new Span<byte>(Raw);
+
+            //byte r = 0, g = 0, b = 0;
             for (int i = 0; i < u_index; i++)
             {
-                RGB(Raw[i], Raw[i + u_index], Raw[i + v_index], out var r, out var g, out var b);
-                //RGB(m_Span[i], m_Span[i + u_index], m_Span[i + v_index], out var r, out var g, out var b);
+                
+                //RGB1(Raw[i], Raw[i + u_index], Raw[i + v_index], ref r, ref g, ref b);
 
-                //rgb[index + 0] = 0;
-                //rgb[index + 1] = 0;
-                //rgb[index + 2] = 0;
-                //index = index + 3;
+
+                RGB(Raw[i], Raw[i + u_index], Raw[i + v_index], out var r, out var g, out var b);
+
+                //RGB(m_Span[i], m_Span[i + u_index], m_Span[i + v_index], out var r, out var g, out var b);
+                
+                rgb[index + 0] = 0;
+                rgb[index + 1] = 0;
+                rgb[index + 2] = 0;
+                index = index + 3;
 
 
                 //var rgbs = (y[i], u[i], v[i]).ToRGB();
@@ -70,7 +83,7 @@ namespace QSoft.YUV
                 //index = index + 3;
             }
 
-            return rgb;
+            return null;
         }
     }
 }
