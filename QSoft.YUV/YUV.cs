@@ -83,5 +83,107 @@ namespace QSoft.YUV
             return (r, g, b);
         }
 
+        public static void ToRGB(this (byte y, byte u, byte v) src, out byte r, out byte g, out byte b)
+        {
+            r = g = b =0;
+            //var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
+
+            //var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
+
+            //var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
+
+            double Y = src.y;
+            double V = src.v;
+            double U = src.u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+            var R = 1.164 * Y + 1.596 * V;
+            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            var B = 1.164 * Y + 2.017 * U;
+            if (R > 255.0)
+            {
+                R = 255;
+            }
+            else if (R < 0)
+            {
+                R = 0;
+            }
+            if (G > 255.0)
+            {
+                G = 255;
+            }
+            else if (G < 0)
+            {
+                G = 0;
+            }
+            if (B > 255.0)
+            {
+                B = 255;
+            }
+            else if (B < 0)
+            {
+                B = 0;
+            }
+            r = (byte)R;
+            g = (byte)G;
+            b = (byte)B;
+
+            //var r = (byte)(R > 255 ? 255 : R);
+            //var g = (byte)(G > 255 ? 255 : G);
+            //var b = (byte)(B > 255 ? 255 : B);
+        }
+
+        public static void ToRGB(byte y, byte u, byte v, out byte r, out byte g, out byte b)
+        {
+            r = g = b = 0;
+            //var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
+
+            //var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
+
+            //var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
+
+            double Y = y;
+            double V = v;
+            double U = u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+            var R = 1.164 * Y + 1.596 * V;
+            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            var B = 1.164 * Y + 2.017 * U;
+            if (R > 255.0)
+            {
+                R = 255;
+            }
+            else if (R < 0)
+            {
+                R = 0;
+            }
+            if (G > 255.0)
+            {
+                G = 255;
+            }
+            else if (G < 0)
+            {
+                G = 0;
+            }
+            if (B > 255.0)
+            {
+                B = 255;
+            }
+            else if (B < 0)
+            {
+                B = 0;
+            }
+            r = (byte)R;
+            g = (byte)G;
+            b = (byte)B;
+
+            //var r = (byte)(R > 255 ? 255 : R);
+            //var g = (byte)(G > 255 ? 255 : G);
+            //var b = (byte)(B > 255 ? 255 : B);
+        }
+
     }
 }

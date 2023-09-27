@@ -122,15 +122,15 @@ namespace PixelViwer
             this.image_src.Source = bmp_src;
 
             byte[] yuv444p_raw = File.ReadAllBytes("../../../s1-yuv444p.yuv");
-            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000, 3376, yuv2rgb_2);
-            var sw= System.Diagnostics.Stopwatch.StartNew();
+            var yuv444p = new QSoft.YUV.YUV444P(yuv444p_raw, 6000, 3376);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < 20; i++)
             {
                 var rgb111 = yuv444p.ToRGB();
             }
             sw.Stop();
-            System.Diagnostics.Trace.WriteLine(sw.ElapsedMilliseconds/20);
-            //this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
+            System.Diagnostics.Trace.WriteLine(sw.ElapsedMilliseconds / 20);
+            this.image.Source = yuv444p.ToRGB().ToBitmapSource(yuv444p.Width, yuv444p.Height);
 
             return;
             
