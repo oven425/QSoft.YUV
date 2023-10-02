@@ -103,16 +103,18 @@ namespace PixelViwer
             //var ssss = System.Numerics.Vector.IsHardwareAccelerated;
             //int len1 = 6000 * 3000 * 2;
             //var sw1 = System.Diagnostics.Stopwatch.StartNew();
-            //for (int i = 0; i<len1; i++)
+            //for (int i = 0; i < len1; i++)
             //{
             //    var v1 = new Vector2((float)0.1, (float)0.1);
             //    var v2 = new Vector2((float)3.1, (float)4.1);
             //    var vResult = v1 * v2;
 
-            //    //var ff = 0.1 * 3.1;
-            //    //var fff = 0.1 * 4.1;
+            //    var ff = 0.1 * 3.1;
+            //    var fff = 0.1 * 4.1;
             //}
             //sw1.Stop();
+            //System.Diagnostics.Trace.WriteLine(sw1.ElapsedMilliseconds / len1);
+            //return;
 
 
             BitmapImage bmp_src = new BitmapImage();

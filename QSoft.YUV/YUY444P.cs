@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,50 +83,129 @@ namespace QSoft.YUV
             //    index = index + 3;
             //}
 
+            //unsafe
+            //{
+            //    fixed (byte* rgb_ptr = rgb)
+            //    fixed (byte* yuv_ptr = this.Raw)
+            //    {
+            //        for (int i = 0; i < u_index; i++)
+            //        {
+
+            //            //RGB(yuv_ptr[i], yuv_ptr[i + u_index], yuv_ptr[i + v_index], out var r, out var g, out var b);
+            //            //rgb_ptr[index + 0] = r;
+            //            //rgb_ptr[index + 1] = g;
+            //            //rgb_ptr[index + 2] = b;
+            //            //index = index + 3;
+
+
+            //            //RGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index), out var r, out var g, out var b);
+            //            //Unsafe.Write(yuv_ptr + index + 0, r);
+            //            //Unsafe.Write(yuv_ptr + index + 1, g);
+            //            //Unsafe.Write(yuv_ptr + index + 2, b);
+            //            //index = index + 3;
+
+            //            //var rgbs = (Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index)).ToRGB();
+            //            //Unsafe.Write(rgb_ptr + index + 0, rgbs.r);
+            //            //Unsafe.Write(rgb_ptr + index + 1, rgbs.g);
+            //            //Unsafe.Write(rgb_ptr + index + 2, rgbs.b);
+            //            //index = index + 3;
+
+            //            //(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index)).ToRGB(out var r, out var g, out var b);
+            //            //Unsafe.Write(rgb_ptr + index + 0, r);
+            //            //Unsafe.Write(rgb_ptr + index + 1, g);
+            //            //Unsafe.Write(rgb_ptr + index + 2, b);
+            //            //index = index + 3;
+
+            //            YUVEx.ToRGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index),out var r, out var g, out var b);
+            //            Unsafe.Write(rgb_ptr + index + 0, r);
+            //            Unsafe.Write(rgb_ptr + index + 1, g);
+            //            Unsafe.Write(rgb_ptr + index + 2, b);
+            //            index = index + 3;
+            //        }
+            //    }
+
+            //}
+
+
             unsafe
             {
                 fixed (byte* rgb_ptr = rgb)
                 fixed (byte* yuv_ptr = this.Raw)
                 {
-                    for (int i = 0; i < u_index; i++)
+                    //Parallel.For(0, u_index, (x) =>
+                    //{
+                    //    //System.Diagnostics.Trace.WriteLine(x);
+                    //});
+                    for(int i=0;i < u_index;i++)
                     {
-
-                        //RGB(yuv_ptr[i], yuv_ptr[i + u_index], yuv_ptr[i + v_index], out var r, out var g, out var b);
-                        //rgb_ptr[index + 0] = r;
-                        //rgb_ptr[index + 1] = g;
-                        //rgb_ptr[index + 2] = b;
-                        //index = index + 3;
-
-
-                        //RGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index), out var r, out var g, out var b);
-                        //Unsafe.Write(yuv_ptr + index + 0, r);
-                        //Unsafe.Write(yuv_ptr + index + 1, g);
-                        //Unsafe.Write(yuv_ptr + index + 2, b);
-                        //index = index + 3;
-
-                        //var rgbs = (Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index)).ToRGB();
-                        //Unsafe.Write(rgb_ptr + index + 0, rgbs.r);
-                        //Unsafe.Write(rgb_ptr + index + 1, rgbs.g);
-                        //Unsafe.Write(rgb_ptr + index + 2, rgbs.b);
-                        //index = index + 3;
-
-                        //(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index)).ToRGB(out var r, out var g, out var b);
-                        //Unsafe.Write(rgb_ptr + index + 0, r);
-                        //Unsafe.Write(rgb_ptr + index + 1, g);
-                        //Unsafe.Write(rgb_ptr + index + 2, b);
-                        //index = index + 3;
-
-                        YUVEx.ToRGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index),out var r, out var g, out var b);
+                        ToRGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index), out var r, out var g, out var b);
                         Unsafe.Write(rgb_ptr + index + 0, r);
                         Unsafe.Write(rgb_ptr + index + 1, g);
                         Unsafe.Write(rgb_ptr + index + 2, b);
                         index = index + 3;
                     }
                 }
-
             }
 
+
             return rgb;
+        }
+
+        public void ToRGB(byte y, byte u, byte v, out byte r, out byte g, out byte b)
+        {
+            r = g = b = 0;
+            //var B = 1.164 * (src.y - 16) + 2.018 * (src.u - 128);
+
+            //var G = 1.164 * (src.y - 16) - 0.813 * (src.v - 128) - 0.391 * (src.u - 128);
+
+            //var R = 1.164 * (src.y - 16) + 1.596 * (src.v - 128);
+
+
+
+            double Y = y;
+            double V = v;
+            double U = u;
+            Y -= 16;
+            U -= 128;
+            V -= 128;
+
+            var r_vector1 = new Vector2((Single)1.164, (Single)1.596);
+            var r_vector2 = new Vector2((Single)Y, (Single)U);
+            var R = Vector2.Dot(r_vector1, r_vector2);
+            //var R1 = 1.164 * Y + 1.596 * V;
+            //var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            //var B = 1.164 * Y + 2.017 * U;
+            if (R > 255.0)
+            {
+                R = 255;
+            }
+            else if (R < 0)
+            {
+                R = 0;
+            }
+            //if (G > 255.0)
+            //{
+            //    G = 255;
+            //}
+            //else if (G < 0)
+            //{
+            //    G = 0;
+            //}
+            //if (B > 255.0)
+            //{
+            //    B = 255;
+            //}
+            //else if (B < 0)
+            //{
+            //    B = 0;
+            //}
+            r = (byte)R;
+            //g = (byte)G;
+            //b = (byte)B;
+
+            //var r = (byte)(R > 255 ? 255 : R);
+            //var g = (byte)(G > 255 ? 255 : G);
+            //var b = (byte)(B > 255 ? 255 : B);
         }
     }
 }
