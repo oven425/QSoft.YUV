@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelViwer", "PixelViwer\Pi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSoft.YUV", "QSoft.YUV\QSoft.YUV.csproj", "{E1AE2733-25E2-42D4-A39D-16B163A80B61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIMD_NET6", "SIMD_NET6\SIMD_NET6.csproj", "{35BD598B-AA8D-41E6-A4D9-516D34C17DB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E1AE2733-25E2-42D4-A39D-16B163A80B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1AE2733-25E2-42D4-A39D-16B163A80B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1AE2733-25E2-42D4-A39D-16B163A80B61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BD598B-AA8D-41E6-A4D9-516D34C17DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BD598B-AA8D-41E6-A4D9-516D34C17DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35BD598B-AA8D-41E6-A4D9-516D34C17DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35BD598B-AA8D-41E6-A4D9-516D34C17DB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
