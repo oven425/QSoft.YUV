@@ -29,19 +29,8 @@ namespace QSoft.YUV
         
         public ((int x, int y)xy, (byte y, byte u, byte v)yuv) MapRGB()
         {
+            
             return (xy: (0, 0), yuv: (0, 0, 0));
-        }
-
-        void RGB(byte y, byte u, byte v, out byte r, out byte g, out byte b)
-        {
-            r = 0;
-            b = 0;g = 0;
-        }
-
-        void RGB1(byte y, byte u, byte v, ref byte r, ref byte g, ref byte b)
-        {
-            r = 0;
-            b = 0; g = 0;
         }
 
         public override byte[] ToRGB()
@@ -126,16 +115,24 @@ namespace QSoft.YUV
 
             //}
 
+            //Vector<int>
+            float[] ffs = new float[this.Raw.Length];
+            Array.Copy(this.Raw, ffs, this.Raw.Length);
+            var vector_count = Vector<float>.Count;
+            var a_1_164 = new Vector<float>((float)1.164);
+            for (int i=0; i<u_index; i=i+vector_count)
+            {
+                var ys = new Vector<float>(ffs, i);
+                var us = new Vector<float>(ffs, u_index+i);
+                var vs = new Vector<float>(ffs, v_index+i);
+                
+            }
 
             unsafe
             {
                 fixed (byte* rgb_ptr = rgb)
                 fixed (byte* yuv_ptr = this.Raw)
                 {
-                    //Parallel.For(0, u_index, (x) =>
-                    //{
-                    //    //System.Diagnostics.Trace.WriteLine(x);
-                    //});
                     for(int i=0;i < u_index;i++)
                     {
                         ToRGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index), out var r, out var g, out var b);
@@ -146,10 +143,10 @@ namespace QSoft.YUV
                     }
                 }
             }
-
-
             return rgb;
         }
+
+       
 
         public void ToRGB(byte y, byte u, byte v, out byte r, out byte g, out byte b)
         {
@@ -169,12 +166,9 @@ namespace QSoft.YUV
             U -= 128;
             V -= 128;
 
-            var r_vector1 = new Vector2((Single)1.164, (Single)1.596);
-            var r_vector2 = new Vector2((Single)Y, (Single)U);
-            var R = Vector2.Dot(r_vector1, r_vector2);
-            //var R1 = 1.164 * Y + 1.596 * V;
-            //var G = 1.164 * Y - 0.392 * U - 0.813 * V;
-            //var B = 1.164 * Y + 2.017 * U;
+            var R = 1.164 * Y + 1.596 * V;
+            var G = 1.164 * Y - 0.392 * U - 0.813 * V;
+            var B = 1.164 * Y + 2.017 * U;
             if (R > 255.0)
             {
                 R = 255;
@@ -183,25 +177,25 @@ namespace QSoft.YUV
             {
                 R = 0;
             }
-            //if (G > 255.0)
-            //{
-            //    G = 255;
-            //}
-            //else if (G < 0)
-            //{
-            //    G = 0;
-            //}
-            //if (B > 255.0)
-            //{
-            //    B = 255;
-            //}
-            //else if (B < 0)
-            //{
-            //    B = 0;
-            //}
+            if (G > 255.0)
+            {
+                G = 255;
+            }
+            else if (G < 0)
+            {
+                G = 0;
+            }
+            if (B > 255.0)
+            {
+                B = 255;
+            }
+            else if (B < 0)
+            {
+                B = 0;
+            }
             r = (byte)R;
-            //g = (byte)G;
-            //b = (byte)B;
+            g = (byte)G;
+            b = (byte)B;
 
             //var r = (byte)(R > 255 ? 255 : R);
             //var g = (byte)(G > 255 ? 255 : G);

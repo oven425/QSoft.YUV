@@ -4,9 +4,9 @@ using BenchmarkDotNet.Running;
 using System.Numerics;
 
 Console.WriteLine("Hello, World!");
-var vv = new Counter();
-vv.VectorSum();
-//var summary = BenchmarkRunner.Run<Counter>();
+//var vv = new Counter();
+//vv.VectorSum();
+var summary = BenchmarkRunner.Run<Counter>();
 Console.WriteLine("Hello, World!");
 Console.ReadLine();
 
@@ -31,7 +31,7 @@ public class Counter
         {
             var v1 = new Vector<int>(_left, i);
             var v2 = new Vector<int>(_right, i);
-            (v1 + v2).CopyTo(result, i);
+            (v1 * v2).CopyTo(result, i);
         }
         return result;
     }
@@ -39,7 +39,7 @@ public class Counter
     [Benchmark]
     public int[] LinQSum()
     {
-        var result = _left.Zip(_right, (l, r) => l + r).ToArray();
+        var result = _left.Zip(_right, (l, r) => l * r).ToArray();
         return result;
     }
 
@@ -49,7 +49,7 @@ public class Counter
         var result = new Int32[_left.Length];
         for (int i = 0; i <= _left.Length - 1; i++)
         {
-            result[i] = _left[i] + _right[i];
+            result[i] = _left[i] * _right[i];
         }
         return result;
     }
