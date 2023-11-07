@@ -18,19 +18,6 @@ namespace QSoft.ColorSpaceCOnvert
         YUV444p,
         YUY2
     }
-    //public class YUVChannel
-    //{
-    //    public byte[] Raw { protected set; get; }
-    //    public ColorSpaces ColorSpace { protected set; get; }
-    //    public List<byte> Y {protected set;get; }
-    //    public List<byte> U { set; get; }
-    //    public List<byte> V { set; get; }
-    //    public YUVChannel(ColorSpaces colorspace, byte[] raw)
-    //    {
-    //        this.ColorSpace = colorspace;
-    //        this.Raw = raw;
-    //    }
-    //}
 
     public interface IYUV
     {
