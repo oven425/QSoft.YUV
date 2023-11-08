@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,13 +19,41 @@ namespace QSoft.YUV
            
         }
 
+        public YUV444P(byte[] raw, int width, int height, Yuv2RgbDelegate yuv2rgbfunc)
+            : base(raw, width, height, yuv2rgbfunc)
+        {
 
+        }
 
 
         public override IEnumerable<byte> Y => Raw.Take(this.Width * this.Height);
         public override IEnumerable<byte> U => Raw.Skip(this.Width * this.Height).Take(this.Width * this.Height);
         public override IEnumerable<byte> V => Raw.Skip(this.Width * this.Height * 2).Take(this.Width * this.Height);
-       
+
+        public byte[] ToRGB_Unsafe()
+        {
+            var rgb = new byte[this.Width * this.Height * 3];
+            int index = 0;
+            int y_index = 0;
+            int u_index = this.Width * this.Height;
+            int v_index = this.Width * this.Height * 2;
+            unsafe
+            {
+                fixed (byte* rgb_ptr = rgb)
+                fixed (byte* yuv_ptr = this.Raw)
+                {
+                    for (int i = 0; i < u_index; i++)
+                    {
+                        ToRGB(Unsafe.Read<byte>(yuv_ptr + i), Unsafe.Read<byte>(yuv_ptr + i + u_index), Unsafe.Read<byte>(yuv_ptr + i + v_index), out var r, out var g, out var b);
+                        Unsafe.Write(rgb_ptr + index + 0, r);
+                        Unsafe.Write(rgb_ptr + index + 1, g);
+                        Unsafe.Write(rgb_ptr + index + 2, b);
+                        index = index + 3;
+                    }
+                }
+            }
+            return rgb;
+        }
 
         public override byte[] ToRGB()
         {
@@ -108,18 +137,18 @@ namespace QSoft.YUV
 
             //}
 
-            //Vector<int>
-            float[] ffs = new float[this.Raw.Length];
-            Array.Copy(this.Raw, ffs, this.Raw.Length);
-            var vector_count = Vector<float>.Count;
-            var a_1_164 = new Vector<float>((float)1.164);
-            for (int i=0; i<u_index; i=i+vector_count)
-            {
-                var ys = new Vector<float>(ffs, i);
-                var us = new Vector<float>(ffs, u_index+i);
-                var vs = new Vector<float>(ffs, v_index+i);
+            ////Vector<int>
+            //float[] ffs = new float[this.Raw.Length];
+            //Array.Copy(this.Raw, ffs, this.Raw.Length);
+            //var vector_count = Vector<float>.Count;
+            //var a_1_164 = new Vector<float>((float)1.164);
+            //for (int i=0; i<u_index; i=i+vector_count)
+            //{
+            //    var ys = new Vector<float>(ffs, i);
+            //    var us = new Vector<float>(ffs, u_index+i);
+            //    var vs = new Vector<float>(ffs, v_index+i);
                 
-            }
+            //}
 
             unsafe
             {
