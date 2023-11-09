@@ -15,7 +15,7 @@ namespace QSoft.YUV
         abstract public IEnumerable<byte> U { get; }
         abstract public IEnumerable<byte> V { get; }
         public delegate void Yuv2RgbDelegate(byte y, byte u, byte v, out byte r, out byte g, out byte b) ;
-        protected event Yuv2RgbDelegate Yuv2Rgb = YUVEx.ToRGB1;
+        
         protected Func<(byte y, byte u, byte v), (byte r, byte g, byte b)> Func_yuv2rgb = YUVEx.ToRGB;
         [Obsolete]
         public YUV(byte[] raw, int width, int height, Func<(byte y, byte u, byte v), (byte y, byte u, byte v)> yuv2rgbfunc)
@@ -36,10 +36,14 @@ namespace QSoft.YUV
             this.Height = height;
             Raw = new byte[raw.Length];
             Array.Copy(raw, Raw, raw.Length);
-            if (yuv2rgbfunc != null)
-            {
-                this.Yuv2Rgb = yuv2rgbfunc;
-            }
+            //if (yuv2rgbfunc != null)
+            //{
+            //    this.Yuv2Rgb = yuv2rgbfunc;
+            //    if(this.Yuv2Rgb != null)
+            //    {
+            //        this.Yuv2Rgb(0,0,0, out var r, out var g, out var b);
+            //    }
+            //}
         }
 
         abstract public byte[] ToRGB();
