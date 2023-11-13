@@ -21,7 +21,7 @@ BenchmarkRunner.Run<YUVTT>();
 Console.WriteLine("Hello, World!");
 Console.ReadLine();
 
-[MemoryDiagnoser]
+//[MemoryDiagnoser]
 public class YUVTT
 {
     YUV444P m_444p;
@@ -31,37 +31,49 @@ public class YUVTT
         //Console.WriteLine(pp);
         byte[] yuv444p_raw = File.ReadAllBytes("C:\\s1-yuv444p.yuv");
         this.m_444p = new YUV444P(yuv444p_raw, 6000, 3376);
-        
     }
+
     [Benchmark]
-    public void Safe()
+    public void New()
     {
         this.m_444p.ToRGB();
     }
 
     [Benchmark]
-    public void Safe_Func()
+    public void Old()
     {
-        this.m_444p.ToRGB_Func();
+        this.m_444p.ToRGB_Old();
     }
 
-    [Benchmark]
-    public void Safe_Delegate()
-    {
-        this.m_444p.ToRGB_Delegate();
-    }
+    //[Benchmark]
+    //public void Old_1()
+    //{
+    //    this.m_444p.ToRGB_Old_1();
+    //}
 
-    [Benchmark]
-    public void ToRGB_Unsafe_Func()
-    {
-        this.m_444p.ToRGB_Unsafe_Func();
-    }
+    //[Benchmark]
+    //public void Safe_Func()
+    //{
+    //    this.m_444p.ToRGB_Func();
+    //}
 
-    [Benchmark]
-    public void ToRGB_Unsafe_Delegate()
-    {
-        this.m_444p.ToRGB_Unsafe_Delegate();
-    }
+    //[Benchmark]
+    //public void Safe_Delegate()
+    //{
+    //    this.m_444p.ToRGB_Delegate();
+    //}
+
+    //[Benchmark]
+    //public void ToRGB_Unsafe_Func()
+    //{
+    //    this.m_444p.ToRGB_Unsafe_Func();
+    //}
+
+    //[Benchmark]
+    //public void ToRGB_Unsafe_Delegate()
+    //{
+    //    this.m_444p.ToRGB_Unsafe_Delegate();
+    //}
 }
 
 [MemoryDiagnoser]
