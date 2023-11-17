@@ -11,7 +11,7 @@ namespace QSoft.YUV.SIMD
     {
         public int Width { protected set; get; }
         public int Height { protected set; get; }
-        public byte[] Raw { protected set; get; }
+        public float[] Raw { protected set; get; }
         abstract public IEnumerable<byte> Y { get; }
         abstract public IEnumerable<byte> U { get; }
         abstract public IEnumerable<byte> V { get; }
@@ -20,7 +20,7 @@ namespace QSoft.YUV.SIMD
         {
             this.Width = width;
             this.Height = height;
-            Raw = new byte[raw.Length];
+            Raw = new float[raw.Length];
             Array.Copy(raw, Raw, raw.Length);
         }
 
