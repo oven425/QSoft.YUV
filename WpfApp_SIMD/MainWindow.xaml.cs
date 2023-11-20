@@ -27,7 +27,7 @@ namespace WpfApp_SIMD
             byte[] yuv444p_raw = File.ReadAllBytes("../../../../s1-yuv444p.yuv");
             QSoft.YUV.SIMD.YUV444P yuv444p = new QSoft.YUV.SIMD.YUV444P(yuv444p_raw, 6000, 3376);
             var rgb = yuv444p.ToRGB();
-            //this.image.Source = yuv444p.ToRGB().ToBitmapSource(6000, 3376);
+            this.image.Source = yuv444p.ToRGB().ToBitmapSource(6000, 3376);
         }
     }
 

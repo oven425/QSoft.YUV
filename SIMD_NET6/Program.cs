@@ -19,7 +19,7 @@ Console.WriteLine("Hello, World!");
 //Console.WriteLine($"UnSafe:{sw.ElapsedMilliseconds}");
 //QSoft.YUV.SIMD.YUV444P yuv444p = new QSoft.YUV.SIMD.YUV444P();
 
-return;
+//return;
 BenchmarkRunner.Run<YUVTT>();
 Console.WriteLine("Hello, World!");
 Console.ReadLine();
@@ -28,12 +28,14 @@ Console.ReadLine();
 public class YUVTT
 {
     YUV444P m_444p;
+    QSoft.YUV.SIMD.YUV444P m_SIMD_444p;
     public YUVTT()
     {
         //var pp = System.IO.Path.GetFullPath("s1-yuv444p.yuv");
         //Console.WriteLine(pp);
         byte[] yuv444p_raw = File.ReadAllBytes("C:\\s1-yuv444p.yuv");
         this.m_444p = new YUV444P(yuv444p_raw, 6000, 3376);
+        this.m_SIMD_444p = new QSoft.YUV.SIMD.YUV444P(yuv444p_raw, 6000, 3376);
     }
 
     [Benchmark]
@@ -42,11 +44,17 @@ public class YUVTT
         this.m_444p.ToRGB();
     }
 
+    //[Benchmark]
+    //public void Old()
+    //{
+    //    this.m_444p.ToRGB_Old();
+    //}
     [Benchmark]
-    public void Old()
+    public void SIMD()
     {
-        this.m_444p.ToRGB_Old();
+        this.m_SIMD_444p.ToRGB();
     }
+
 
     //[Benchmark]
     //public void Old_1()
