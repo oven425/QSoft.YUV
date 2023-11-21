@@ -32,9 +32,12 @@ namespace QSoft.YUV.SIMD
             int y_index = 0;
             int u_index = this.Width * this.Height;
             int v_index = this.Width * this.Height * 2;
-            
+            var r_buf = new byte[Width*Height];
+            var g_buf = new byte[Width * Height];
+            var b_buf = new byte[Width * Height];
             var rgb = new byte[Width * Height * 3];
-            //var span = rgb.AsSpan();
+            var span = rgb.AsSpan();
+            
             var size = Vector<float>.Count;
             var vector_1164 = new Vector<float>((float)1.164);
             var vector_128 = new Vector<float>((float)128);
@@ -62,66 +65,173 @@ namespace QSoft.YUV.SIMD
                 var bs_max = Vector.LessThan(bs, vector_255);
                 var gs_max = Vector.LessThan(gs, vector_255);
                 var rs_max = Vector.LessThan(rs, vector_255);
+                //for (int j = 0; j < size; j++)
+                //{
+                //    if (rs_min[j] != 0)
+                //    {
+                //        //span[index + 0] = 0;
+                //        rgb.AsSpan(index + 0).Fill(0);
+                //    }
+                //    else if (rs_max[j] != -1)
+                //    {
+                //        //span[index + 0] = 255;
+                //        //rgb[index + 0] = 255;
+                //        rgb.AsSpan(index + 0).Fill(255);
+                //    }
+                //    else
+                //    {
+                //        //span[index + 0] = (byte)rs[j];
+                //        //rgb[index + 0] = (byte)rs[j];
+                //        rs.CopyTo(rgb.AsSpan(index + 0));
+                //    }
 
-                for (int j = 0; j < size; j++)
-                {
-                    if (rs_min[j] != 0)
-                    {
-                        rgb[index + 0] = 0;
-                    }
-                    else if (rs_max[j] != -1)
-                    {
-                        rgb[index + 0] = 255;
-                    }
-                    else
-                    {
-                        rgb[index + 0] = (byte)rs[j];
-                    }
+                //    if (gs_min[j] != 0)
+                //    {
+                //        //span[index + 1] = 0;
+                //        //rgb[index + 1] = 0;
+                //    }
+                //    else if (gs_max[j] != -1)
+                //    {
+                //        //span[index + 1] = 255;
+                //        //rgb[index + 1] = 255;
+                //    }
+                //    else
+                //    {
+                //        //span[index + 1] = (byte)gs[j];
+                //        //rgb[index + 1] = (byte)gs[j];
+                //    }
 
-                    if (gs_min[j] != 0)
-                    {
-                        rgb[index + 1] = 0;
-                    }
-                    else if (gs_max[j] != -1)
-                    {
-                        rgb[index + 1] = 255;
-                    }
-                    else
-                    {
-                        rgb[index + 1] = (byte)gs[j];
-                    }
+                //    if (bs_min[j] != 0)
+                //    {
+                //        //span[index + 2] = 0;
+                //        //rgb[index + 2] = 0;
+                //    }
+                //    else if (bs_max[j] != -1)
+                //    {
+                //        //span[index + 2] = 255;
+                //        //rgb[index + 2] = 255;
+                //    }
+                //    else
+                //    {
+                //        //span[index + 2] = (byte)bs[j];
+                //        //rgb[index + 2] = (byte)bs[j];
+                //    }
 
-                    if (bs_min[j] != 0)
-                    {
-                        rgb[index + 2] = 0;
-                    }
-                    else if (bs_max[j] != -1)
-                    {
-                        rgb[index + 2] = 255;
-                    }
-                    else
-                    {
-                        rgb[index + 2] = (byte)bs[j];
-                    }
+                //    index = index + 3;
+                //}
 
-                    index = index + 3;
-                }
+                //for (int j = 0; j < size; j++)
+                //{
+                //    if (rs_min[j] != 0)
+                //    {
+                //        //span[index + 0] = 0;
+                //        rgb[index + 0] = 0;
+                //    }
+                //    else if (rs_max[j] != -1)
+                //    {
+                //        //span[index + 0] = 255;
+                //        rgb[index + 0] = 255;
+                //    }
+                //    else
+                //    {
+                //        //span[index + 0] = (byte)rs[j];
+                //        rgb[index + 0] = (byte)rs[j];
+                //    }
+
+                //    if (gs_min[j] != 0)
+                //    {
+                //        //span[index + 1] = 0;
+                //        rgb[index + 1] = 0;
+                //    }
+                //    else if (gs_max[j] != -1)
+                //    {
+                //        //span[index + 1] = 255;
+                //        rgb[index + 1] = 255;
+                //    }
+                //    else
+                //    {
+                //        //span[index + 1] = (byte)gs[j];
+                //        rgb[index + 1] = (byte)gs[j];
+                //    }
+
+                //    if (bs_min[j] != 0)
+                //    {
+                //        //span[index + 2] = 0;
+                //        rgb[index + 2] = 0;
+                //    }
+                //    else if (bs_max[j] != -1)
+                //    {
+                //        //span[index + 2] = 255;
+                //        rgb[index + 2] = 255;
+                //    }
+                //    else
+                //    {
+                //        //span[index + 2] = (byte)bs[j];
+                //        rgb[index + 2] = (byte)bs[j];
+                //    }
+
+                //    index = index + 3;
+                //}
+
+                //for (int j = 0; j < size; j++)
+                //{
+                //    if (rs_min[j] != 0)
+                //    {
+                //        span[index + 0] = 0;
+                //    }
+                //    else if (rs_max[j] != -1)
+                //    {
+                //        span[index + 0] = 255;
+                //    }
+                //    else
+                //    {
+                //        span[index + 0] = (byte)rs[j];
+                //    }
+
+                //    if (gs_min[j] != 0)
+                //    {
+                //        span[index + 1] = 0;
+                //    }
+                //    else if (gs_max[j] != -1)
+                //    {
+                //        span[index + 1] = 255;
+                //    }
+                //    else
+                //    {
+                //        span[index + 1] = (byte)gs[j];
+                //    }
+
+                //    if (bs_min[j] != 0)
+                //    {
+                //        span[index + 2] = 0;
+                //    }
+                //    else if (bs_max[j] != -1)
+                //    {
+                //        span[index + 2] = 255;
+                //    }
+                //    else
+                //    {
+                //        span[index + 2] = (byte)bs[j];
+                //    }
+
+                //    index = index + 3;
+                //}
 
                 //for (int j = 0; j < size; j++)
                 //{
 
-                    //    //var r = rs[j];
-                    //    //var g = gs[j];
-                    //    //var b = bs[j];
-                    //    rgb[index + 0] = Limit(rs[j]);
-                    //    rgb[index + 1] = Limit(gs[j]);
-                    //    rgb[index + 2] = Limit(bs[j]);
+                //    //var r = rs[j];
+                //    //var g = gs[j];
+                //    //var b = bs[j];
+                //    rgb[index + 0] = Limit(rs[j]);
+                //    rgb[index + 1] = Limit(gs[j]);
+                //    rgb[index + 2] = Limit(bs[j]);
 
-                    //    //rgb[index + 0] = 0;
-                    //    //rgb[index + 1] = 0;
-                    //    //rgb[index + 2] = 0;
-                    //    index = index + 3;
-                    //}
+                //    //rgb[index + 0] = 0;
+                //    //rgb[index + 1] = 0;
+                //    //rgb[index + 2] = 0;
+                //    index = index + 3;
+                //}
 
             }
             return rgb;
