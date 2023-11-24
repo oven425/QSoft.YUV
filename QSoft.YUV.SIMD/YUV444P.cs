@@ -65,6 +65,7 @@ namespace QSoft.YUV.SIMD
                         var bs_max = Vector.LessThan(bs, vector_255);
                         var gs_max = Vector.LessThan(gs, vector_255);
                         var rs_max = Vector.LessThan(rs, vector_255);
+
                         for (int j = 0; j < size; j++)
                         {
                             if (rs_min[j] != 0)
@@ -78,7 +79,7 @@ namespace QSoft.YUV.SIMD
                             else
                             {
                                 *(prgb + index + 0) = (byte)rs[j];
-                                //Unsafe.Write(prgb + index + 0, rs[j]);
+                                Unsafe.Write(prgb + index + 0, rs[j]);
                             }
 
                             if (gs_min[j] != 0)
@@ -93,8 +94,7 @@ namespace QSoft.YUV.SIMD
                             }
                             else
                             {
-                                //span[index + 1] = (byte)gs[j];
-                                //rgb[index + 1] = (byte)gs[j];
+                                *(prgb + index + 1) = (byte)gs[j];
                             }
 
                             if (bs_min[j] != 0)
@@ -109,8 +109,7 @@ namespace QSoft.YUV.SIMD
                             }
                             else
                             {
-                                //span[index + 2] = (byte)bs[j];
-                                //rgb[index + 2] = (byte)bs[j];
+                                *(prgb + index + 2) = (byte)bs[j];
                             }
 
                             index = index + 3;
