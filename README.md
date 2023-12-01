@@ -35,3 +35,6 @@ ffmpeg -i 720-404-yuy2.jpg -pix_fmt nv12 720-404-nv12.yuv
 ```shell
 ffmpeg -i 720-404-yuy2.jpg -pix_fmt rgb24 .\720-404-rgb24.rgb
 ```
+
+
+https://codereview.stackexchange.com/questions/254255/sobel-operator-simd-x86-intrinsics-implementation
