@@ -70,6 +70,12 @@ public class YUVTT
         this.m_SIMD_444p.ToRGB();
     }
 
+    [Benchmark]
+    public void SIMD_ToRGB_()
+    {
+        this.m_SIMD_444p.ToRGB_();
+    }
+
     //[Benchmark]
     //public void Old_1()
     //{
