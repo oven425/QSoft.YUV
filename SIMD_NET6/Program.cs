@@ -4,6 +4,12 @@ using BenchmarkDotNet.Running;
 using QSoft.YUV;
 using System.Numerics;
 
+var pps = System.Diagnostics.PerformanceCounterCategory.GetCategories(); ;
+foreach(var category in pps)
+{
+    
+    Console.WriteLine(category.CategoryName);
+}
 Console.WriteLine("Hello, World!");
 //var vv = new Counter();
 //vv.VectorSum();
