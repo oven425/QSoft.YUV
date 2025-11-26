@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 
@@ -14,6 +15,9 @@ namespace QSoft.YUV.SIMD
         public YUV444P_SIMD(byte[] raw, int width, int height) 
             : base(raw, width, height)
         {
+            //var v1 = new Vector<float>(0.1f, 0.2f, 0.1f);
+            //var v2 = new Vector<float>(1.1f, 2.2f);
+            //var vResult1 = Vector.Dot(v1, v2);
         }
 
         public override IEnumerable<byte> Y => throw new NotImplementedException();
@@ -48,6 +52,9 @@ namespace QSoft.YUV.SIMD
             var vector_0 = new Vector<float>(0);
             for (int i = 0; i < u_index; i = i + size)
             {
+                Vector256<float> v1 = new();
+
+                //Vector256.Shuffle(
                 var y1 = new Vector<float>(Raw, i) - vector_16;
                 var y = y1 * vector_1164;
                 var u = new Vector<float>(Raw, i + u_index) - vector_128;
@@ -61,7 +68,7 @@ namespace QSoft.YUV.SIMD
                 var bs_max = Vector.LessThan(bs, vector_255);
                 var gs_max = Vector.LessThan(gs, vector_255);
                 var rs_max = Vector.LessThan(rs, vector_255);
-                
+
                 for (int j = 0; j < size; j++)
                 {
                     if (rs_min[j] != 0)

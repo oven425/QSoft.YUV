@@ -2,34 +2,14 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using QSoft.YUV;
+using QSoft.YUV.SIMD;
 using System.Numerics;
 
-var pps = System.Diagnostics.PerformanceCounterCategory.GetCategories(); ;
-foreach(var category in pps)
-{
-    
-    Console.WriteLine(category.CategoryName);
-}
-Console.WriteLine("Hello, World!");
-//var vv = new Counter();
-//vv.VectorSum();
-//var summary = BenchmarkRunner.Run<Counter>();
-//var pp = new YUVTT();
-//var sw=System.Diagnostics.Stopwatch.StartNew();
-//pp.Safe();
-//sw.Stop();
-//Console.WriteLine($"Safe:{sw.ElapsedMilliseconds}");
-//sw = System.Diagnostics.Stopwatch.StartNew();
-//pp.UnSafe();
-//sw.Stop();
-//Console.WriteLine($"UnSafe:{sw.ElapsedMilliseconds}");
-//QSoft.YUV.SIMD.YUV444P yuv444p = new QSoft.YUV.SIMD.YUV444P();
 
-//return;
-BenchmarkRunner.Run<YUVTT>();
-Console.WriteLine("Hello, World!");
-Console.ReadLine();
 
+//var m_444p1 = new YUV444P_SIMD(File.ReadAllBytes("../../../../s1-yuv444p.yuv"), 6000, 3376);
+//Console.ReadLine();
+var summary = BenchmarkRunner.Run<YUVTT>();
 //[MemoryDiagnoser]
 public class YUVTT
 {
@@ -37,9 +17,12 @@ public class YUVTT
     QSoft.YUV.SIMD.YUV444P_SIMD m_SIMD_444p;
     public YUVTT()
     {
-        //var pp = System.IO.Path.GetFullPath("s1-yuv444p.yuv");
-        //Console.WriteLine(pp);
-        byte[] yuv444p_raw = File.ReadAllBytes("C:\\s1-yuv444p.yuv");
+        var p1 = System.AppDomain.CurrentDomain.BaseDirectory;
+        Console.WriteLine(p1);
+        var pp = System.IO.Path.GetFullPath("s1-yuv444p.yuv");
+        Console.WriteLine(pp);
+        Console.ReadLine();
+        byte[] yuv444p_raw = File.ReadAllBytes("../../../../s1-yuv444p.yuv");
         this.m_444p = new YUV444P(yuv444p_raw, 6000, 3376);
         this.m_SIMD_444p = new QSoft.YUV.SIMD.YUV444P_SIMD(yuv444p_raw, 6000, 3376);
     }

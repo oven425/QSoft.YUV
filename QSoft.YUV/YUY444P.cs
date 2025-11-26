@@ -15,6 +15,8 @@ namespace QSoft.YUV
         public YUV444P(byte[] raw, int width, int height, Func<(byte y, byte u, byte v), (byte r, byte g, byte b)> yuv2rgbfunc=null) 
             : base(raw, width, height, yuv2rgbfunc)
         {
+
+
         }
         protected event Yuv2RgbDelegate Yuv2Rgb = YUVEx.ToRGB1;
         public YUV444P(byte[] raw, int width, int height, Yuv2RgbDelegate yuv2rgbfunc)
@@ -69,7 +71,6 @@ namespace QSoft.YUV
             int y_index = 0;
             int u_index = this.Width * this.Height;
             int v_index = this.Width * this.Height * 2;
-
 
             for (int i = 0; i < u_index; i++)
             {
