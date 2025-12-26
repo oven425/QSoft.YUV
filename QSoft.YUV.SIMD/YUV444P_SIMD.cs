@@ -27,10 +27,41 @@ namespace QSoft.YUV.SIMD
         public override IEnumerable<byte> V => throw new NotImplementedException();
         override public byte[] ToRGB()
         {          
-            if (Vector<float>.IsSupported == false)
+            if (!Vector<float>.IsSupported)
             {
                 throw new NotSupportedException();
             }
+            byte [] raw = new byte[64];
+            Vector128<byte> r = Vector128.Create((byte)1, (byte)2, (byte)3, (byte)4, (byte)5, (byte)6, (byte)7, (byte)8, (byte)9, (byte)10, (byte)11, (byte)12, (byte)13, (byte)14, (byte)15, (byte)16);
+            Vector128<byte> g = Vector128.Create((byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34, (byte)35, (byte)36);
+            Vector128<byte> b = Vector128.Create((byte)41, (byte)42, (byte)43, (byte)44, (byte)45, (byte)46, (byte)47, (byte)48, (byte)49, (byte)50, (byte)51, (byte)52, (byte)53, (byte)54, (byte)55, (byte)56);
+            Vector128<byte> a = Vector128.Create((byte)61, (byte)62, (byte)63, (byte)64, (byte)65, (byte)66, (byte)67, (byte)68, (byte)69, (byte)70, (byte)71, (byte)72, (byte)73, (byte)74, (byte)75, (byte)76);
+            var rg_low = Sse2.UnpackLow(r, g);   // 前 8 個 RG
+            var rg_high = Sse2.UnpackHigh(r, g); // 後 8 個 RG
+
+            var ba_low = Sse2.UnpackLow(b, a);   // 前 8 個 BA
+            var ba_high = Sse2.UnpackHigh(b, a); // 後 8 個 BA
+
+            var res0 = Sse2.UnpackLow(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
+            var res1 = Sse2.UnpackHigh(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
+
+            // 處理後 8 組像素 (8-15)
+            // 分解成 8-11 (res2) 和 12-15 (res3)
+            var res2 = Sse2.UnpackLow(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
+            var res3 = Sse2.UnpackHigh(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
+            unsafe
+            {
+                fixed (byte* ptr = raw)
+                {
+                    // 依序寫入 64 個 byte
+                    Sse2.Store(ptr, res0);       // 寫入 bytes 0-15
+                    Sse2.Store(ptr + 16, res1);  // 寫入 bytes 16-31
+                    Sse2.Store(ptr + 32, res2);  // 寫入 bytes 32-47
+                    Sse2.Store(ptr + 48, res3);  // 寫入 bytes 48-63
+                }
+            }
+            
+
             int index = 0;
             int y_index = 0;
             int u_index = this.Width * this.Height;
@@ -39,7 +70,7 @@ namespace QSoft.YUV.SIMD
             var g_buf = new byte[Width * Height];
             var b_buf = new byte[Width * Height];
             var rgb = new byte[Width * Height * 3];
-
+            
             var size = Vector<float>.Count;
             var vector_1164 = new Vector<float>((float)1.164);
             var vector_128 = new Vector<float>((float)128);
@@ -68,7 +99,7 @@ namespace QSoft.YUV.SIMD
                 var bs_max = Vector.LessThan(bs, vector_255);
                 var gs_max = Vector.LessThan(gs, vector_255);
                 var rs_max = Vector.LessThan(rs, vector_255);
-
+                
                 for (int j = 0; j < size; j++)
                 {
                     if (rs_min[j] != 0)

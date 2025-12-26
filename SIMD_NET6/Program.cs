@@ -7,8 +7,9 @@ using System.Numerics;
 
 
 
-//var m_444p1 = new YUV444P_SIMD(File.ReadAllBytes("../../../../s1-yuv444p.yuv"), 6000, 3376);
-//Console.ReadLine();
+var m_444p1 = new YUV444P_SIMD(File.ReadAllBytes("../../../../s1-yuv444p.yuv"), 6000, 3376);
+m_444p1.ToRGB();
+Console.ReadLine();
 var summary = BenchmarkRunner.Run<YUVTT>();
 //[MemoryDiagnoser]
 public class YUVTT
