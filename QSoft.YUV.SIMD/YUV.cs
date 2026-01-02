@@ -12,6 +12,7 @@ namespace QSoft.YUV.SIMD
         public int Width { protected set; get; }
         public int Height { protected set; get; }
         public float[] Raw { protected set; get; }
+        public byte[] RawByte { protected set; get; }
         abstract public IEnumerable<byte> Y { get; }
         abstract public IEnumerable<byte> U { get; }
         abstract public IEnumerable<byte> V { get; }
@@ -22,6 +23,8 @@ namespace QSoft.YUV.SIMD
             this.Height = height;
             Raw = new float[raw.Length];
             Array.Copy(raw, Raw, raw.Length);
+            this.RawByte = new byte[raw.Length];
+            Array.Copy(raw, RawByte, raw.Length);
         }
 
         abstract public byte[] ToRGB();
