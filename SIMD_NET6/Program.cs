@@ -7,9 +7,9 @@ using System.Numerics;
 
 
 
-var m_444p1 = new YUV444P_SIMD(File.ReadAllBytes("../../../../s1-yuv444p.yuv"), 6000, 3376);
-m_444p1.ToRGB();
-Console.ReadLine();
+//var m_444p1 = new YUV444P_SIMD(File.ReadAllBytes("../../../../s1-yuv444p.yuv"), 6000, 3376);
+//m_444p1.ToRGB();
+//Console.ReadLine();
 var summary = BenchmarkRunner.Run<YUVTT>();
 //[MemoryDiagnoser]
 public class YUVTT
@@ -34,67 +34,44 @@ public class YUVTT
         this.m_444p.ToRGB();
     }
 
+    [Benchmark]
+    public void Sse2()
+    {
+        this.m_SIMD_444p.ToBGRA_Sse();
+    }
+
     //[Benchmark]
     //public void Old()
     //{
     //    this.m_444p.ToRGB_Old();
     //}
-    [Benchmark]
-    public void SIMD_ToRGB_3()
-    {
-        this.m_SIMD_444p.ToRGB_3();
-    }
-    [Benchmark]
-    public void SIMD_ToRGB_2()
-    {
-        this.m_SIMD_444p.ToRGB_2();
-    }
-    [Benchmark]
-    public void SIMD_ToRGB_4()
-    {
-        this.m_SIMD_444p.ToRGB_4();
-    }
-    [Benchmark]
-    public void SIMD_ToRGB()
-    {
-        this.m_SIMD_444p.ToRGB();
-    }
-
-    [Benchmark]
-    public void SIMD_ToRGB_()
-    {
-        this.m_SIMD_444p.ToRGB_();
-    }
-
     //[Benchmark]
-    //public void Old_1()
+    //public void SIMD_ToRGB_3()
     //{
-    //    this.m_444p.ToRGB_Old_1();
+    //    this.m_SIMD_444p.ToRGB_3();
+    //}
+    //[Benchmark]
+    //public void SIMD_ToRGB_2()
+    //{
+    //    this.m_SIMD_444p.ToRGB_2();
+    //}
+    //[Benchmark]
+    //public void SIMD_ToRGB_4()
+    //{
+    //    this.m_SIMD_444p.ToRGB_4();
+    //}
+    //[Benchmark]
+    //public void SIMD_ToRGB()
+    //{
+    //    this.m_SIMD_444p.ToRGB();
     //}
 
     //[Benchmark]
-    //public void Safe_Func()
+    //public void SIMD_ToRGB_()
     //{
-    //    this.m_444p.ToRGB_Func();
+    //    this.m_SIMD_444p.ToRGB_();
     //}
 
-    //[Benchmark]
-    //public void Safe_Delegate()
-    //{
-    //    this.m_444p.ToRGB_Delegate();
-    //}
-
-    //[Benchmark]
-    //public void ToRGB_Unsafe_Func()
-    //{
-    //    this.m_444p.ToRGB_Unsafe_Func();
-    //}
-
-    //[Benchmark]
-    //public void ToRGB_Unsafe_Delegate()
-    //{
-    //    this.m_444p.ToRGB_Unsafe_Delegate();
-    //}
 }
 
 [MemoryDiagnoser]

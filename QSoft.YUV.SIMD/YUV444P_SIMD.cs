@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 
-//Gather index access
 namespace QSoft.YUV.SIMD
 {
     public class YUV444P_SIMD: YUV
@@ -31,36 +31,6 @@ namespace QSoft.YUV.SIMD
             {
                 throw new NotSupportedException();
             }
-            byte [] raw = new byte[64];
-            Vector128<byte> r = Vector128.Create((byte)1, (byte)2, (byte)3, (byte)4, (byte)5, (byte)6, (byte)7, (byte)8, (byte)9, (byte)10, (byte)11, (byte)12, (byte)13, (byte)14, (byte)15, (byte)16);
-            Vector128<byte> g = Vector128.Create((byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34, (byte)35, (byte)36);
-            Vector128<byte> b = Vector128.Create((byte)41, (byte)42, (byte)43, (byte)44, (byte)45, (byte)46, (byte)47, (byte)48, (byte)49, (byte)50, (byte)51, (byte)52, (byte)53, (byte)54, (byte)55, (byte)56);
-            Vector128<byte> a = Vector128.Create((byte)61, (byte)62, (byte)63, (byte)64, (byte)65, (byte)66, (byte)67, (byte)68, (byte)69, (byte)70, (byte)71, (byte)72, (byte)73, (byte)74, (byte)75, (byte)76);
-            var rg_low = Sse2.UnpackLow(r, g);   // 前 8 個 RG
-            var rg_high = Sse2.UnpackHigh(r, g); // 後 8 個 RG
-
-            var ba_low = Sse2.UnpackLow(b, a);   // 前 8 個 BA
-            var ba_high = Sse2.UnpackHigh(b, a); // 後 8 個 BA
-
-            var res0 = Sse2.UnpackLow(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
-            var res1 = Sse2.UnpackHigh(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
-
-            // 處理後 8 組像素 (8-15)
-            // 分解成 8-11 (res2) 和 12-15 (res3)
-            var res2 = Sse2.UnpackLow(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
-            var res3 = Sse2.UnpackHigh(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
-            unsafe
-            {
-                fixed (byte* ptr = raw)
-                {
-                    // 依序寫入 64 個 byte
-                    Sse2.Store(ptr, res0);       // 寫入 bytes 0-15
-                    Sse2.Store(ptr + 16, res1);  // 寫入 bytes 16-31
-                    Sse2.Store(ptr + 32, res2);  // 寫入 bytes 32-47
-                    Sse2.Store(ptr + 48, res3);  // 寫入 bytes 48-63
-                }
-            }
-            
 
             int index = 0;
             int y_index = 0;
@@ -148,107 +118,176 @@ namespace QSoft.YUV.SIMD
             return rgb;
         }
 
-        public byte[] ToRGB_Unpack()
+        public byte[] ToBGRA_Vector128()
         {
-            if (!Vector<float>.IsSupported)
-            {
-                throw new NotSupportedException();
-            }
-            byte[] raw = new byte[64];
-            Vector128<byte> r = Vector128.Create((byte)1, (byte)2, (byte)3, (byte)4, (byte)5, (byte)6, (byte)7, (byte)8, (byte)9, (byte)10, (byte)11, (byte)12, (byte)13, (byte)14, (byte)15, (byte)16);
-            Vector128<byte> g = Vector128.Create((byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34, (byte)35, (byte)36);
-            Vector128<byte> b = Vector128.Create((byte)41, (byte)42, (byte)43, (byte)44, (byte)45, (byte)46, (byte)47, (byte)48, (byte)49, (byte)50, (byte)51, (byte)52, (byte)53, (byte)54, (byte)55, (byte)56);
-            Vector128<byte> a = Vector128.Create((byte)61, (byte)62, (byte)63, (byte)64, (byte)65, (byte)66, (byte)67, (byte)68, (byte)69, (byte)70, (byte)71, (byte)72, (byte)73, (byte)74, (byte)75, (byte)76);
-            var rg_low = Sse2.UnpackLow(r, g);   // 前 8 個 RG
-            var rg_high = Sse2.UnpackHigh(r, g); // 後 8 個 RG
-
-            var ba_low = Sse2.UnpackLow(b, a);   // 前 8 個 BA
-            var ba_high = Sse2.UnpackHigh(b, a); // 後 8 個 BA
-
-            var res0 = Sse2.UnpackLow(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
-            var res1 = Sse2.UnpackHigh(rg_low.AsUInt16(), ba_low.AsUInt16()).AsByte();
-
-            // 處理後 8 組像素 (8-15)
-            // 分解成 8-11 (res2) 和 12-15 (res3)
-            var res2 = Sse2.UnpackLow(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
-            var res3 = Sse2.UnpackHigh(rg_high.AsUInt16(), ba_high.AsUInt16()).AsByte();
-            unsafe
-            {
-                fixed (byte* ptr = raw)
-                {
-                    // 依序寫入 64 個 byte
-                    Sse2.Store(ptr, res0);       // 寫入 bytes 0-15
-                    Sse2.Store(ptr + 16, res1);  // 寫入 bytes 16-31
-                    Sse2.Store(ptr + 32, res2);  // 寫入 bytes 32-47
-                    Sse2.Store(ptr + 48, res3);  // 寫入 bytes 48-63
-                }
-            }
-
-
-            int index = 0;
-            int y_index = 0;
             int u_index = this.Width * this.Height;
             int v_index = this.Width * this.Height * 2;
-            var r_buf = new byte[Width * Height];
-            var g_buf = new byte[Width * Height];
-            var b_buf = new byte[Width * Height];
-            var rgb = new byte[Width * Height * 3];
-            Vector<float> vector_alpha = new Vector<float>(255.0f);
-            var size = Vector<float>.Count;
-            var vector_1164 = new Vector<float>((float)1.164);
-            var vector_128 = new Vector<float>((float)128);
-            var vector_16 = new Vector<float>((float)16);
-            var vector_2018 = new Vector<float>((float)2.018);
-            var vector_1596 = new Vector<float>((float)1.596);
-            var vector_0813 = new Vector<float>((float)0.813);
-            var vector_0319 = new Vector<float>((float)0.391);
-            var vector_255 = new Vector<float>(255);
-            var vector_0 = new Vector<float>(0);
-            var y_vec = new Vector128<byte>();
-            unsafe {
-                fixed (byte* ptr = &RawByte[0])
+
+            var rgb = new byte[Width * Height * 4];
+
+            nuint rgbindex = 0;
+            Vector128<byte> A = Vector128.Create((byte)255);
+            ReadOnlySpan<byte> src = new(RawByte);
+            ref byte dst = ref MemoryMarshal.GetReference(rgb.AsSpan());
+                
+            for (int i = 0; i < u_index; i = i + 16)
+            {
+                var y_vec_byte = Vector128.Create(src[i..]);
+                var u_vec_byte = Vector128.Create(src[(i + u_index)..]);
+                var v_vec_byte = Vector128.Create(src[(i + v_index)..]);
+
+                var (y_vec_low_short, y_vec_high_short) = Vector128.Widen(y_vec_byte);
+                var (u_vec_low_short, u_vec_high_short) = Vector128.Widen(u_vec_byte);
+                var (v_vec_low_short, v_vec_high_short) = Vector128.Widen(v_vec_byte);
+
+                var r_low_short = yuv_R(y_vec_low_short.AsInt16(), v_vec_low_short.AsInt16());
+                var r_high_short = yuv_R(y_vec_high_short.AsInt16(), v_vec_high_short.AsInt16());
+                var g_low_short = yuv_G(y_vec_low_short.AsInt16(), u_vec_low_short.AsInt16(), v_vec_low_short.AsInt16());
+                var g_high_short = yuv_G(y_vec_high_short.AsInt16(), u_vec_high_short.AsInt16(), v_vec_high_short.AsInt16());
+                var b_low_short = yuv_B(y_vec_low_short.AsInt16(), u_vec_low_short.AsInt16());
+                var b_high_short = yuv_B(y_vec_high_short.AsInt16(), u_vec_high_short.AsInt16());
+
+                Vector128<byte> R = Vector128.Narrow(r_low_short, r_high_short).AsByte();
+                Vector128<byte> G = Vector128.Narrow(g_low_short, g_high_short).AsByte();
+                Vector128<byte> B = Vector128.Narrow(b_low_short, b_high_short).AsByte();
+                
+                Vector128<byte> rg_lo = Sse2.UnpackLow(B, G);
+                Vector128<byte> ba_lo = Sse2.UnpackLow(R, A);
+
+                Vector128<byte> rg_hi = Sse2.UnpackHigh(B, G);
+                Vector128<byte> ba_hi = Sse2.UnpackHigh(R, A);
+
+                Vector128<byte> rgba_0_3 = Sse2.UnpackLow(rg_lo.AsUInt16(), ba_lo.AsUInt16()).AsByte();
+                Vector128<byte> rgba_4_7 = Sse2.UnpackHigh(rg_lo.AsUInt16(), ba_lo.AsUInt16()).AsByte();
+                Vector128<byte> rgba_8_11 = Sse2.UnpackLow(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
+                Vector128<byte> rgba_15_15 = Sse2.UnpackHigh(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
+
+                Vector128.StoreUnsafe(rgba_0_3, ref dst, rgbindex);
+                Vector128.StoreUnsafe(rgba_4_7, ref dst, rgbindex+16);
+                Vector128.StoreUnsafe(rgba_8_11, ref dst, rgbindex+32);
+                Vector128.StoreUnsafe(rgba_15_15, ref dst, rgbindex+48);
+                rgbindex = rgbindex + 64;
+                
+            }
+
+            return rgb;
+        }
+
+
+        public byte[] ToBGRA_Sse()
+        {
+
+
+            int u_index = this.Width * this.Height;
+            int v_index = this.Width * this.Height * 2;
+
+            var rgb = new byte[Width * Height * 4];
+
+            var rgbindex = 0;
+            unsafe 
+            {
+                fixed (byte* dst = &rgb[0])
+                fixed (byte* src = &RawByte[0])
                 {
-                    y_vec = Sse2.LoadVector128(ptr);
+                    for(int i=0; i< u_index; i=i+16)
+                    {
+                        var y_vec_byte = Sse2.LoadVector128(src + i);
+                        var u_vec_byte = Sse2.LoadVector128(src + i+u_index);
+                        var v_vec_byte = Sse2.LoadVector128(src + i+v_index);
+                        Vector128<byte> zero = Vector128<byte>.Zero;
+                        Vector128<short> y_vec_low_short = Sse2.UnpackLow(y_vec_byte, zero).AsInt16();
+                        Vector128<short> y_vec_high_short = Sse2.UnpackHigh(y_vec_byte, zero).AsInt16();
+                        Vector128<short> u_vec_low_short = Sse2.UnpackLow(u_vec_byte, zero).AsInt16();
+                        Vector128<short> u_vec_high_short = Sse2.UnpackHigh(u_vec_byte, zero).AsInt16();
+                        Vector128<short> v_vec_low_short = Sse2.UnpackLow(v_vec_byte, zero).AsInt16();
+                        Vector128<short> v_vec_high_short = Sse2.UnpackHigh(v_vec_byte, zero).AsInt16();
+                        var r_low_short = yuv_R(y_vec_low_short, v_vec_low_short);
+                        var r_high_short = yuv_R(y_vec_high_short, v_vec_high_short);
+                        var g_low_short = yuv_G(y_vec_low_short, u_vec_low_short, v_vec_low_short);
+                        var g_high_short = yuv_G(y_vec_high_short, u_vec_high_short, v_vec_high_short);
+                        var b_low_short = yuv_B(y_vec_low_short, u_vec_low_short);
+                        var b_high_short = yuv_B(y_vec_high_short, u_vec_high_short);
+
+                        Vector128<byte> R = Sse2.PackUnsignedSaturate(r_low_short, r_high_short);
+                        Vector128<byte> G = Sse2.PackUnsignedSaturate(g_low_short, g_high_short);
+                        Vector128<byte> B = Sse2.PackUnsignedSaturate(b_low_short, b_high_short);
+
+                        Vector128<byte> A = Vector128.Create((byte)255);
+
+                        Vector128<byte> rg_lo = Sse2.UnpackLow(B, G);
+                        Vector128<byte> ba_lo = Sse2.UnpackLow(R, A);
+
+                        Vector128<byte> rg_hi = Sse2.UnpackHigh(B, G);
+                        Vector128<byte> ba_hi = Sse2.UnpackHigh(R, A);
+
+                        Vector128<byte> rgba_0_3 = Sse2.UnpackLow(rg_lo.AsUInt16(), ba_lo.AsUInt16()).AsByte();
+                        Vector128<byte> rgba_4_7 = Sse2.UnpackHigh(rg_lo.AsUInt16(), ba_lo.AsUInt16()).AsByte();
+                        Vector128<byte> rgba_8_11 = Sse2.UnpackLow(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
+                        Vector128<byte> rgba_15_15 = Sse2.UnpackHigh(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
+
+                        Sse2.Store(dst + rgbindex, rgba_0_3);
+                        Sse2.Store(dst + 16 + rgbindex, rgba_4_7);
+                        Sse2.Store(dst + 32 + rgbindex, rgba_8_11);
+                        Sse2.Store(dst + 48 + rgbindex, rgba_15_15);
+                        rgbindex = rgbindex + 64;
+                    }
+                    
+
                 }
             }
-            for (int i = 0; i < u_index; i = i + size)
-            {
-                
-                Vector128<short> y16 = Sse2.UnpackLow(y_vec, Vector128<byte>.Zero).AsInt16();
-                var y1 = new Vector<float>(Raw, i) - vector_16;
-                var y = y1 * vector_1164;
-                var u = new Vector<float>(Raw, i + u_index) - vector_128;
-                var v = new Vector<float>(Raw, i + v_index) - vector_128;
-                var bs = y + vector_2018 * u;
-                var gs = y - vector_0813 * v - vector_0319 * u;
-                var rs = y + vector_1596 * v;
-                var bs_min = Vector.LessThan(bs, vector_0);
-                var gs_min = Vector.LessThan(gs, vector_0);
-                var rs_min = Vector.LessThan(rs, vector_0);
-                var bs_max = Vector.LessThan(bs, vector_255);
-                var gs_max = Vector.LessThan(gs, vector_255);
-                var rs_max = Vector.LessThan(rs, vector_255);
 
-
-                
-                var gIntVec = Vector.ConvertToInt32(gs);
-                var bIntVec = Vector.ConvertToInt32(bs);
-                var aIntVec = Vector.ConvertToInt32(vector_alpha);
-
-                var rIntVec = Vector.ConvertToInt32(rs);
-
-
-
-                Vector128<int> lower = rIntVec.AsVector256().GetLower();
-                Vector128<int> upper = rIntVec.AsVector256().GetUpper();
-
-                Vector128<short> packedShort = Sse2.PackSignedSaturate(lower, upper);
-
-                Vector128<byte> result = Sse2.PackUnsignedSaturate(packedShort, packedShort);
-
-
-            }
             return rgb;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector128<short> yuv_R(Vector128<short> y, Vector128<short> v)
+        {
+            var v128 = Vector128.Create((short)128);
+            var coeffR = Vector128.Create((short)179); // 359 / 2
+
+            // v_diff = V - 128
+            Vector128<short> v_diff = Sse2.Subtract(v, v128);
+
+            // temp = (v_diff * 179) >> 7
+            Vector128<short> prod = Sse2.MultiplyLow(v_diff, coeffR);
+            Vector128<short> expr = Sse2.ShiftRightArithmetic(prod, 7);
+
+            return Vector128.Add(y, expr);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector128<short> yuv_G(Vector128<short> y, Vector128<short> u, Vector128<short> v)
+        {
+            var v128 = Vector128.Create((short)128);
+            var coeffG_U = Vector128.Create((short)44); // 88 / 2
+            var coeffG_V = Vector128.Create((short)91); // 183 / 2 (約略值)
+
+            Vector128<short> u_diff = Sse2.Subtract(u, v128);
+            Vector128<short> v_diff = Sse2.Subtract(v, v128);
+
+            // (44 * u_diff + 91 * v_diff) >> 7
+            Vector128<short> prodU = Sse2.MultiplyLow(u_diff, coeffG_U);
+            Vector128<short> prodV = Sse2.MultiplyLow(v_diff, coeffG_V);
+            Vector128<short> combined = Sse2.Add(prodU, prodV);
+
+            Vector128<short> expr = Sse2.ShiftRightArithmetic(combined, 7);
+
+            return Vector128.Subtract(y, expr);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector128<short> yuv_B(Vector128<short> y, Vector128<short> u)
+        {
+            var v128 = Vector128.Create((short)128);
+            var coeffB = Vector128.Create((short)227); // 454 / 2
+
+            Vector128<short> u_diff = Sse2.Subtract(u, v128);
+
+            // temp = (u_diff * 227) >> 7
+            Vector128<short> prod = Sse2.MultiplyLow(u_diff, coeffB);
+            Vector128<short> expr = Sse2.ShiftRightArithmetic(prod, 7);
+
+            return Vector128.Add(y, expr);
         }
 
         public byte[] ToRGB_()
