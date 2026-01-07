@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,9 +18,11 @@ namespace WpfApp_SIMD
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainUI m_MainUI;
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this.m_MainUI = new MainUI();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -31,14 +34,30 @@ namespace WpfApp_SIMD
             var rgb = yuv444p.ToBGRA_Vector128();
             sw.Stop();
             System.Diagnostics.Trace.WriteLine($"ToBGRA_Vector128: {sw.ElapsedMilliseconds} ms");
+            sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            var rgb256 = yuv444p.ToBGRA_Vector256();
+            sw.Stop();
+            System.Diagnostics.Trace.WriteLine($"ToBGRA_Vector256: {sw.ElapsedMilliseconds} ms");
             this.image.Source = rgb.ToBitmapSource1(6000, 3376);
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            yuv444p.ToRGB_4();
+            yuv444p.ToRGB();
             sw.Stop();
-            System.Diagnostics.Trace.WriteLine($"ToRGB_4: {sw.ElapsedMilliseconds} ms");
+            System.Diagnostics.Trace.WriteLine($"ToRGB: {sw.ElapsedMilliseconds} ms");
             //this.image.Source = yuv444p.ToRGB_4().ToBitmapSource(6000, 3376);
         }
+    }
+
+    public class MainUI
+    {
+        public ObservableCollection<ImageData> ImageDatas { set; get; } = [];
+    }
+
+    public class ImageData
+    {
+        public string Name { set; get; }
+        public BitmapSource Image { set; get; }
     }
 
     public static class YUVExtentsion
