@@ -13,9 +13,9 @@ namespace QSoft.YUV
         public IEnumerable<byte> V => m_Raw.Where((x, index) => index % 4 == 3);
         public int Width => m_Width;
         public int Height => m_Height;
-        int m_Width;
-        int m_Height;
-        byte[] m_Raw;
+        readonly int m_Width;
+        readonly int m_Height;
+        readonly byte[] m_Raw;
         public YUY2(byte[] raw, int width, int height)
         {
             this.m_Raw = raw;

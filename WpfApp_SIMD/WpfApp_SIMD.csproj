@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QSoft.YUV.Onnx\QSoft.YUV.Onnx.csproj" />
     <ProjectReference Include="..\QSoft.YUV.SIMD\QSoft.YUV.SIMD.csproj" />
   </ItemGroup>
 

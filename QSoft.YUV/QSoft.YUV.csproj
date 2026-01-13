@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NV12.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="YUV.cs" />
     <Compile Include="YUY2.cs" />

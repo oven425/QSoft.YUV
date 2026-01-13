@@ -10,6 +10,15 @@ using System.Runtime.Intrinsics.X86;
 
 namespace QSoft.YUV.SIMD
 {
+    public static class Yuv444pExtension
+    {
+        public static Span<byte> Yuv444pToBGR32(this Span<byte> raw)
+        {
+            return [];
+        }
+
+
+    }
     public class YUV444P_SIMD: YUV
     {
         public YUV444P_SIMD(byte[] raw, int width, int height) 
@@ -219,10 +228,11 @@ namespace QSoft.YUV.SIMD
                 var rgba_8_11 = Sse2.UnpackLow(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
                 var rgba_15_15 = Sse2.UnpackHigh(rg_hi.AsUInt16(), ba_hi.AsUInt16()).AsByte();
 
-                Vector128.StoreUnsafe(rgba_0_3, ref dst, rgbindex);
+                //Vector128.StoreAlignedNonTemporal(rgba_0_3, ref dst, rgbindex);
                 Vector128.StoreUnsafe(rgba_4_7, ref dst, rgbindex+16);
                 Vector128.StoreUnsafe(rgba_8_11, ref dst, rgbindex+32);
                 Vector128.StoreUnsafe(rgba_15_15, ref dst, rgbindex+48);
+
                 rgbindex = rgbindex + 64;
                 
             }

@@ -6,15 +6,25 @@
         xmlns:local="clr-namespace:PixelViwer"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="MainWindow" Height="450" Width="800">
+        AllowDrop="True"
+        Drop="Window_Drop"
+        DragEnter="Window_DragEnter"
+        d:DataContext="{d:DesignInstance Type=local:MainUI, IsDesignTimeCreatable=True}"
+        Title="MainWindow" Width="600" Height="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition  Height="Auto"/>
         </Grid.RowDefinitions>
-        <Image x:Name="image"/>
-        <Grid Grid.Row="1">
-            <Image x:Name="image_src"/>
+        <Grid Grid.Row="0">
+            <Image Source="{Binding Bmp}"/>
+            <!--<Path Stretch="Uniform" Stroke="Red" Data="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z"/>-->
         </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock Text="Width:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Width}" Width="60"/>
+            <TextBlock Text="Height:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Height}" Width="60"/>
+        </StackPanel>
     </Grid>
 </Window>

@@ -82,27 +82,5 @@ namespace QSoft.YUV
             }
             return rgb;
         }
-
-
-        public byte[] ToRGB_Old()
-        {
-            var rgb = new byte[this.Width * this.Height * 3];
-
-            int index = 0;
-            int y_index = 0;
-            int u_index = this.Width * this.Height;
-            int v_index = this.Width * this.Height * 2;
-
-
-            for (int i = 0; i < u_index; i++)
-            {
-                var rgbbuf = this.Func_yuv2rgb((Raw[i], Raw[i + u_index], Raw[i + v_index]));
-                rgb[index + 0] = rgbbuf.r;
-                rgb[index + 1] = rgbbuf.g;
-                rgb[index + 2] = rgbbuf.b;
-                index = index + 3;
-            }
-            return rgb;
-        }
     }
 }

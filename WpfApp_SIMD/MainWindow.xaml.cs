@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,10 +24,15 @@ namespace WpfApp_SIMD
         {
             InitializeComponent();
             this.DataContext = this.m_MainUI = new MainUI();
+            //QSoft.YUV.Onnx.YUV.ExportYuvOnnx();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //using MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile("../../../../s1-yuv444p.yuv", FileMode.Open);
+            //using var accessor = mmf.CreateViewAccessor(0, 100);
+            //Span<byte> imageSpan = accessor.GetSpan<byte>(0, (int)totalByteCount);
+
             byte[] yuv444p_raw = File.ReadAllBytes("../../../../s1-yuv444p.yuv");
             QSoft.YUV.SIMD.YUV444P_SIMD yuv444p = new QSoft.YUV.SIMD.YUV444P_SIMD(yuv444p_raw, 6000, 3376);
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
@@ -46,6 +52,7 @@ namespace WpfApp_SIMD
             sw.Stop();
             System.Diagnostics.Trace.WriteLine($"ToRGB: {sw.ElapsedMilliseconds} ms");
             //this.image.Source = yuv444p.ToRGB_4().ToBitmapSource(6000, 3376);
+
         }
     }
 
